@@ -47,8 +47,8 @@ Like my scripts? Become a [sponsor](https://github.com/sponsors/RileyXX) and sup
 - Amazon Wishlist: [Link ↗](https://www.amazon.com/hz/wishlist/ls/WURF5NWZ843U)
 
 ## Also posted on:
-* [PyPi](https://pypi.org/project/TMDbTraktSyncer/)
-* [Reddit](https://www.reddit.com/r/trakt/comments/132heo0/imdb_trakt_rating_syncer_tool_sync_both_ways/)
+* [PyPi](https://pypi.org/project/TMDBTraktSyncer/)
+* [Reddit](https://www.reddit.com/r/trakt/comments/13jlu4r/tmdb_trakt_rating_syncer_tool_2_way_sync/)
 
 <br>
 
