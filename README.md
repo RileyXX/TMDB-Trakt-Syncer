@@ -31,6 +31,7 @@ This python script will sync user ratings for Movies and TV Shows both ways betw
 7. Done. The script will continue to run and sync your ratings. This may take some time, you can follow its progress in the command line.
 
 ## Troubleshooting, known issues, workarounds & future outlook:
+* Add support for review/comment sync https://github.com/RileyXX/TMDB-Trakt-Syncer/issues/1
 * If any of your details change, passwords, logins, api keys etc, just delete credentials.txt and that will reset the script. It will prompt you to enter your new details on next run.
 
 ## Screenshot:
