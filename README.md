@@ -2,10 +2,10 @@
 This python script will sync user ratings for Movies and TV Shows both ways between Trakt and TMDB. Ratings already set will not be overwritten. This script should work on an OS where python is supported (Windows, Linux, Mac, ChromeOS, etc). If you're looking to sync your ratings between Trakt, Plex, IMDB, and TMDB then these are my recommended projects: [PlexTraktSync](https://github.com/Taxel/PlexTraktSync), [IMDb-Trakt-Syncer](https://github.com/RileyXX/IMDb-Trakt-Syncer) & [TMDB-Trakt-Syncer](https://github.com/RileyXX/TMDB-Trakt-Syncer).
 ## Install Instructions:
 1. Install [Python](https://www.python.org/downloads/). 
-2. Run `python -m pip install TMDbTraktSyncer` in command line.
+2. Run `python -m pip install TMDBTraktSyncer` in command line.
 3. Login to [Trakt](https://trakt.tv/oauth/applications) and create a new API application. We will name it `TMDbTraktSyncer`. In the Redirect uri field enter `urn:ietf:wg:oauth:2.0:oob` then Save. 
 4. Login to [TMDB](https://www.themoviedb.org/settings/api/) and create a new API application. Choose developer, accept the terms and start filling out the application form. For type of use `Personal`. For application name we will call it `TMDB-Trakt-Sync`. For application url enter `localhost`. For application summary enter `Use TMDB api and Trakt api to sync ratings user ratings between platforms. https://github.com/RileyXX/TMDB-Trakt-Syncer`. Fill in the rest of the fields with whatever you want and submit. Your api keys will be instantly generated.
-5. Run the script by calling `TMDbTraktSyncer` in command line. 
+5. Run the script by calling `TMDBTraktSyncer` in command line. 
 6. Follow the prompts on first run. It will ask you to fill in your Trakt client id and client secret from step 3. It will also ask you to fill in your tmdb_v4_token from step 4. Please note that these details are saved insecurely as credentials.txt in the same folder as the script.
 7. Done, setup complete. The script will continue to run and sync your ratings. This may take some time, you can follow its progress in the command line.
 
@@ -23,7 +23,7 @@ This python script will sync user ratings for Movies and TV Shows both ways betw
 
 ## Alternative manual no pip install method:
 1. Install [Python](https://www.python.org/downloads/).
-2. Download the latest .zip from the [releases page](https://github.com/RileyXX/TMDb-Trakt-Syncer/releases) and extract it to the file directory of your choice.
+2. Download the latest .zip from the [releases page](https://github.com/RileyXX/TMDB-Trakt-Syncer/releases) and extract it to the file directory of your choice.
 3. Login to [Trakt](https://trakt.tv/oauth/applications) and create a new API application. We will name it `TMDBTraktSyncer`. In the Redirect uri field enter `urn:ietf:wg:oauth:2.0:oob` then Save. 
 4. Login to [TMDB](https://www.themoviedb.org/settings/api/) and create a new API application. Choose developer, accept the terms and start filling out the application form. For type of use `Personal`. For application name we will call it `TMDB-Trakt-Sync`. For application url enter `localhost`. For application summary enter `Use TMDB api and Trakt api to sync ratings user ratings between platforms. https://github.com/RileyXX/TMDB-Trakt-Syncer`. Fill in the rest of the fields with whatever you want and submit. Your api keys will be instantly generated.
 5. Run `TMDBTraktSyncer.py` OR open terminal and navigate to folder where `TMDBTraktSyncer.py` is located. Run `TMDBTraktSyncer.py` in terminal. 
