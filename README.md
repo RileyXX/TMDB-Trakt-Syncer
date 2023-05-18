@@ -1,6 +1,6 @@
 # TMDB-Trakt-Syncer
 
-This Python script syncs user ratings for Movies, TV Shows, and episodes both ways between [Trakt](https://trakt.tv/dashboard) and [TMDB](https://www.themoviedb.org/). Existing ratings are not overwritten. The script is designed to work on any operating system that supports Python, including Windows, Linux, Mac, and ChromeOS. If you're interested in syncing ratings between Trakt, Plex, IMDb, and TMDB, I recommend the following projects: [PlexTraktSync](https://github.com/Taxel/PlexTraktSync), [IMDb-Trakt-Syncer](https://github.com/RileyXX/IMDb-Trakt-Syncer), and [TMDB-Trakt-Syncer](https://github.com/RileyXX/TMDB-Trakt-Syncer).
+This Python script syncs user ratings for Movies, TV Shows, and episodes both ways between [Trakt](https://trakt.tv/) and [TMDB](https://www.themoviedb.org/). Existing ratings are not overwritten. The script is designed to work on any operating system that supports Python, including Windows, Linux, Mac, and ChromeOS. If you're interested in syncing ratings between Trakt, Plex, IMDb, and TMDB, I recommend the following projects: [PlexTraktSync](https://github.com/Taxel/PlexTraktSync), [IMDb-Trakt-Syncer](https://github.com/RileyXX/IMDb-Trakt-Syncer), and [TMDB-Trakt-Syncer](https://github.com/RileyXX/TMDB-Trakt-Syncer).
 
 ## Installation Instructions:
 1. Install [Python](https://www.python.org/downloads/).
@@ -41,7 +41,7 @@ _Execute in your operating system's native command line._
 ```
 python -m pip install TMDBTraktSyncer==VERSION_NUMBER
 ```
-_Replace `VERSION_NUMBER` with your [desired version](https://github.com/RileyXX/TMDb-Trakt-Syncer/releases) (e.g. 1.0.1) and execute in your operating system's native command line._
+_Replace `VERSION_NUMBER` with your [desired version](https://github.com/RileyXX/TMDB-Trakt-Syncer/releases) (e.g. 1.0.1) and execute in your operating system's native command line._
 
 ## Alternative Manual Installation Method (without pip install):
 1. Install [Python](https://www.python.org/downloads/).
