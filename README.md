@@ -4,7 +4,7 @@ This Python script syncs user ratings for Movies, TV Shows, and episodes both wa
 
 ## Installation Instructions:
 1. Install [Python](https://www.python.org/downloads/).
-2. Install the script by executing `python -m pip install TMDBTraktSyncer` in your operating system's native command line.
+2. Install the script by executing `python -m pip install TMDBTraktSyncer` in command line.
 3. Login to [Trakt](https://trakt.tv/oauth/applications) and create a new API application named `TMDbTraktSyncer`. In the "Redirect uri" field, enter `urn:ietf:wg:oauth:2.0:oob`, then save the application.
 4. Login to [TMDB](https://www.themoviedb.org/settings/api/) and create a new API application. Choose "Developer" and accept the terms. Fill out the application form as follows: 
    - Type of use: `Personal`
