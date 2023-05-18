@@ -34,5 +34,6 @@ setup(
         'console_scripts': [
             'TMDBTraktSyncer = TMDBTraktSyncer.TMDBTraktSyncer:main'
         ]
-    }
+    },
+    python_requires='>=3.6, <4'
 )
