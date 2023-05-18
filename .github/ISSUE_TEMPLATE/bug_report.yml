@@ -4,7 +4,7 @@ body:
 - type: checkboxes
   attributes:
     label: Is there already an issue for your problem?
-    description: Please make sure you are not creating an already submitted <a href="https://github.com/RileyXX/TMDB-Trakt-Syncer/issues">Issue</a>. Be sure to check closed issues as well, incase your issue has already been fixed.
+    description: Please make sure you are not creating an already submitted <a href="https://github.com/RileyXX/TMDB-Trakt-Syncer/issues">Issue</a>. Be sure to check closed issues as well.
     options:
       - label: I have checked older issues, open and closed
         required: true
@@ -13,8 +13,7 @@ body:
     label: Description
     description: Please describe the issue your are having and any relevant steps needed to reproduce the error.
     placeholder: |
-      Issue Description: Describe your issue
-      Reproducing the error: Steps needed to reproduce the error
+      Describe your issue and any steps needed to reproduce the error.
     render: markdown
   validations:
     required: true
@@ -26,6 +25,7 @@ body:
       OS: Windows 10 or 11/Linux/macOS etc
       Using pip install method: yes
       Using manual no pip install method: no
+    render: markdown
   validations:
     required: true
 - type: textarea
@@ -33,7 +33,7 @@ body:
     label: Error Messages
     description: |
       Place any relevant error messages you noticed here.
-      Make sure you attach the error with your personal information removed in case we need more information.
+      Please include the error message with your personal information removed in case we need more information.
     render: text
   validations:
     required: false

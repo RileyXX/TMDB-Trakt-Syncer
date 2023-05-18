@@ -5,20 +5,14 @@ body:
 - type: checkboxes
   attributes:
     label: Is there already a request for your feature?
-    description: Please make sure you are not creating an already submitted <a href="https://github.com/RileyXX/TMDB-Trakt-Syncer/issues">request</a>. Be sure to check closed issues as well, incase your issue has already been implemented or rejected.
+    description: Please make sure you are not creating an already submitted <a href="https://github.com/RileyXX/TMDB-Trakt-Syncer/issues">request</a>. Be sure to check closed issues as well.
     options:
       - label: I have checked older issues, open and closed
         required: true
 - type: textarea
   attributes:
     label: Is your feature request related to a problem? Please describe.
-    description: A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
-  validations:
-    required: true
-- type: textarea
-  attributes:
-    label: Describe the solution you'd like
-    description: A clear and concise description of what you want to happen.
+    description: A clear and concise description the feature you would like to see implemented.
   validations:
     required: true
 - type: textarea
