@@ -65,7 +65,7 @@ _Replace `VERSION_NUMBER` with your [desired version](https://github.com/RileyXX
 ![Demo](https://i.imgur.com/5LI04O2.png)
 
 ## Sponsorships, Donations, and Custom Projects:
-Like my scripts? Become a [sponsor](https://github.com/sponsors/RileyXX) and support my projects! If you need help with a project, open an issue, and I'll do my best to assist you. For other inquiries and custom projects, you can contact me on [Twitter](https://twitter.com/RileyxBell).
+If you find my scripts helpful, you can become a [sponsor](https://github.com/sponsors/RileyXX) and support my projects! If you need help with a project, open an issue, and I'll do my best to assist you. For other inquiries and custom projects, you can contact me on [Twitter](https://twitter.com/RileyxBell).
 
 #### More Donation Options:
 - Cashapp: `$rileyxx`
