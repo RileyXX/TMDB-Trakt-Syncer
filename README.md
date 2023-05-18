@@ -4,7 +4,7 @@ This Python script syncs user ratings for Movies, TV Shows, and episodes both wa
 
 ## Installation Instructions:
 1. Install [Python](https://www.python.org/downloads/).
-2. Install the script by executing `python -m pip install TMDBTraktSyncer` in command line.
+2. Install the script by running `python -m pip install TMDBTraktSyncer` in command line.
 3. Login to [Trakt](https://trakt.tv/oauth/applications) and create a new API application named `TMDbTraktSyncer`. In the "Redirect uri" field, enter `urn:ietf:wg:oauth:2.0:oob`, then save the application.
 4. Login to [TMDB](https://www.themoviedb.org/settings/api/) and create a new API application. Choose "Developer" and accept the terms. Fill out the application form as follows: 
    - Type of use: `Personal`
@@ -12,7 +12,7 @@ This Python script syncs user ratings for Movies, TV Shows, and episodes both wa
    - Application URL: `localhost`
    - Application summary: `Use TMDB API and Trakt API to sync user ratings between platforms. https://github.com/RileyXX/TMDB-Trakt-Syncer`
    - Fill in the rest of the fields as desired and submit the form. Your API keys will be generated instantly.
-5. Run the script by executing `TMDBTraktSyncer` in the command line.
+5. Run the script by running `TMDBTraktSyncer` in the command line.
 6. Follow the prompts during the first run. You will need to enter your Trakt client ID and client secret from step 3, as well as your `tmdb_v4_token` from step 4. Please note that these details are saved insecurely as `credentials.txt` in the same folder as the script.
 7. Setup is complete. The script will continue running and syncing your ratings. You can monitor its progress in the command line.
 
@@ -20,28 +20,28 @@ This Python script syncs user ratings for Movies, TV Shows, and episodes both wa
 ```
 python -m pip install TMDBTraktSyncer
 ```
-_Execute in your operating system's native command line._
+_Run in your operating system's native command line._
 ## Running the Script:
 ```
 TMDBTraktSyncer
 ```
-_Execute in your operating system's native command line._
+_Run in your operating system's native command line._
 ## Updating the Script:
 ```
 python -m pip install TMDBTraktSyncer --upgrade
 ```
-_Execute in your operating system's native command line._
+_Run in your operating system's native command line._
 ## Uninstalling the Script:
 ```
 python -m pip uninstall TMDBTraktSyncer
 ```
-_Execute in your operating system's native command line._
+_Run in your operating system's native command line._
 
 ## Installing a Specific Version:
 ```
 python -m pip install TMDBTraktSyncer==VERSION_NUMBER
 ```
-_Replace `VERSION_NUMBER` with your [desired version](https://github.com/RileyXX/TMDB-Trakt-Syncer/releases) (e.g. 1.0.1) and execute in your operating system's native command line._
+_Replace `VERSION_NUMBER` with your [desired version](https://github.com/RileyXX/TMDB-Trakt-Syncer/releases) (e.g. 1.0.1) and run in your operating system's native command line._
 
 ## Alternative Manual Installation Method (without pip install):
 1. Install [Python](https://www.python.org/downloads/).
