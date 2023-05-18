@@ -58,7 +58,7 @@ _Replace `VERSION_NUMBER` with your [desired version](https://github.com/RileyXX
 7. Setup is complete. The script will continue running and syncing your ratings. You can monitor its progress in the command line.
 
 ## Troubleshooting, Known Issues, Workarounds & Future Outlook:
-* Add support for review/comment sync https://github.com/RileyXX/TMDB-Trakt-Syncer/issues/1
+* Add support for review/comment sync [Issue #1](https://github.com/RileyXX/TMDB-Trakt-Syncer/issues/1)
 * If any of your details change (e.g., passwords, logins, API keys), simply delete `credentials.txt` to reset the script. It will prompt you to enter your new details during the next run.
 
 ## Screenshot:
