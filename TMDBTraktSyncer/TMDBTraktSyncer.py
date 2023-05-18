@@ -26,7 +26,7 @@ def main():
         tmdb_ratings = tmdbRatings.getTMDBRatings(tmdb_v4_token)
 
         #Get trakt and tmdb ratings and filter out trakt ratings with missing tmdb id
-        trakt_ratings = [rating for rating in trak_tratings if rating['ID'] is not None]
+        trakt_ratings = [rating for rating in trakt_tratings if rating['ID'] is not None]
         tmdb_ratings = [rating for rating in tmdb_ratings if rating['ID'] is not None]
         #Filter out ratings already set
         tmdb_ratings_to_set = [rating for rating in trakt_ratings if rating['ID'] not in [tmdb_rating['ID'] for tmdb_rating in tmdb_ratings]]
