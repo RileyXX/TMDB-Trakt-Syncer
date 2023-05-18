@@ -41,7 +41,7 @@ _Execute in your operating system's native command line._
 ```
 python -m pip install TMDBTraktSyncer==VERSION_NUMBER
 ```
-_Replace `VERSION_NUMBER` with your [desired version](https://github.com/RileyXX/TMDB-Trakt-Syncer/releases) (e.g. 2.1.4) and execute in your operating system's native command line._
+_Replace `VERSION_NUMBER` with your [desired version](https://github.com/RileyXX/TMDB-Trakt-Syncer/releases) (e.g. 1.0.1) and execute in your operating system's native command line._
 
 ## Alternative Manual Installation Method (without pip install):
 1. Install [Python](https://www.python.org/downloads/).
