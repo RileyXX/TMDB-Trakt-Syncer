@@ -3,14 +3,14 @@ import requests
 import time
 try:
     from TMDBTraktSyncer import verifyCredentials
-    from TMDBTraktSyncer import traktRatings
-    from TMDBTraktSyncer import tmdbRatings
-    from TMDBTraktSyncer import errorHandling
-except:
+    from TMDBTraktSyncer import traktData
+    from TMDBTraktSyncer import tmdbData
+    from TMDBTraktSyncer import errorHandling as EH
+except ImportError:
     import verifyCredentials
-    import traktRatings
-    import tmdbRatings
-    import errorHandling
+    import traktData
+    import tmdbData
+    import errorHandling as EH
 
 
 def main():
@@ -18,13 +18,12 @@ def main():
 
         #Get credentials
         trakt_client_id = verifyCredentials.trakt_client_id
-        trakt_client_secret = verifyCredentials.trakt_client_secret
         trakt_access_token = verifyCredentials.trakt_access_token
         tmdb_v4_token = verifyCredentials.tmdb_v4_token
         
             
-        trakt_ratings = traktRatings.getTraktRatings(trakt_client_id, trakt_access_token)
-        tmdb_ratings = tmdbRatings.getTMDBRatings(tmdb_v4_token)
+        trakt_ratings = traktData.getTraktRatings(trakt_client_id, trakt_access_token)
+        tmdb_ratings = tmdbData.getTMDBRatings(tmdb_v4_token)
 
         #Get trakt and tmdb ratings and filter out trakt ratings with missing tmdb id
         trakt_ratings = [rating for rating in trakt_ratings if rating['ID'] is not None]
@@ -65,7 +64,7 @@ def main():
                     url = f"https://api.themoviedb.org/3/tv/{item['ShowID']}/season/{item['Season']}/episode/{item['Episode']}/rating"
                     print(f"Rating episode ({item_count} of {num_items}): {item['Title']} ({item['Year']}) [S{item['Season']:02d}E{item['Episode']:02d}]: {item['Rating']}/10 on TMDB")
 
-                response = errorHandling.make_tmdb_request(url, payload=payload)
+                response = EH.make_tmdb_request(url, payload=payload)
 
             print('Setting TMDB Ratings Complete')
         else:
@@ -119,7 +118,7 @@ def main():
                     print(f"Rating episode ({item_count} of {num_items}): {item['Title']} ({item['Year']}) [S{item['Season']:02d}E{item['Episode']:02d}]: {item['Rating']}/10 on Trakt")
 
                 # Make the API call to rate the item
-                response = errorHandling.make_trakt_request(rate_url, payload=data)
+                response = EH.make_trakt_request(rate_url, payload=data)
 
             print('Setting Trakt Ratings Complete')
         else:
@@ -127,7 +126,7 @@ def main():
 
     except Exception as e:
         error_message = "An error occurred while running the script."
-        errorHandling.report_error(error_message)
+        EH.report_error(error_message)
 
 if __name__ == '__main__':
     main()

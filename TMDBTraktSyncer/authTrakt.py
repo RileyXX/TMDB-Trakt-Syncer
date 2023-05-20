@@ -1,9 +1,9 @@
 import requests
 import os
 try:
-    from TMDBTraktSyncer import errorHandling
-except:
-    import errorHandling
+    from TMDBTraktSyncer import errorHandling as EH
+except ImportError:
+    import errorHandling as EH
 
 def authenticate(client_id, client_secret):
     CLIENT_ID = client_id
@@ -42,7 +42,7 @@ def authenticate(client_id, client_secret):
     }
 
     # Make the request to get the access token
-    response = errorHandling.make_trakt_request('https://api.trakt.tv/oauth/token', headers=headers, payload=data)
+    response = EH.make_trakt_request('https://api.trakt.tv/oauth/token', headers=headers, payload=data)
 
     # Parse the JSON response from the API
     json_data = response.json()

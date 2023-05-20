@@ -3,7 +3,7 @@ import requests
 import time
 try:
     from TMDBTraktSyncer import verifyCredentials
-except:
+except ImportError:
     import verifyCredentials
 
 def report_error(error_message):
