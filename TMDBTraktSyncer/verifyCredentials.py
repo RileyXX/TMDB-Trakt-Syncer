@@ -2,7 +2,7 @@ import os
 import json
 try:
     from TMDBTraktSyncer import authTrakt
-except:
+except ImportError:
     import authTrakt
 
 # Define the file path
