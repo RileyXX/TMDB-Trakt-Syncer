@@ -21,6 +21,7 @@ def main():
         trakt_client_secret = verifyCredentials.trakt_client_secret
         trakt_access_token = verifyCredentials.trakt_access_token
         tmdb_v4_token = verifyCredentials.tmdb_v4_token
+        
             
         trakt_ratings = traktRatings.getTraktRatings(trakt_client_id, trakt_access_token)
         tmdb_ratings = tmdbRatings.getTMDBRatings(tmdb_v4_token)
@@ -43,11 +44,6 @@ def main():
             for item in tmdb_ratings_to_set:
                 item_count += 1
 
-                headers = {
-                    'accept': 'application/json',
-                    'Content-Type': 'application/json;charset=utf-8',
-                    'Authorization': f'Bearer {tmdb_v4_token}'
-                }
                 if item['Type'] == 'movie':
                     payload = {
                         'value': item['Rating']
@@ -69,14 +65,7 @@ def main():
                     url = f"https://api.themoviedb.org/3/tv/{item['ShowID']}/season/{item['Season']}/episode/{item['Episode']}/rating"
                     print(f"Rating episode ({item_count} of {num_items}): {item['Title']} ({item['Year']}) [S{item['Season']:02d}E{item['Episode']:02d}]: {item['Rating']}/10 on TMDB")
 
-                response = requests.post(url, headers=headers, json=payload)
-
-                while response.status_code == 429:
-                    print("Rate limit exceeded. Waiting for 1 second...")
-                    time.sleep(1)
-                    response = requests.post(url, headers=headers, json=payload)
-                if response.status_code != 201:
-                    print(f"Error rating {item}: {response.content}")
+                response = errorHandling.make_tmdb_request(url, payload=payload)
 
             print('Setting TMDB Ratings Complete')
         else:
@@ -86,16 +75,7 @@ def main():
             print('Setting Trakt Ratings')
 
             # Set the API endpoints
-            oauth_url = "https://api.trakt.tv/oauth/token"
             rate_url = "https://api.trakt.tv/sync/ratings"
-
-            # Set the headers
-            headers = {
-                "Content-Type": "application/json",
-                "trakt-api-version": "2",
-                "trakt-api-key": trakt_client_id,
-                "Authorization": f"Bearer {trakt_access_token}"
-            }
             
             # Count the total number of items to rate
             num_items = len(trakt_ratings_to_set)
@@ -139,14 +119,7 @@ def main():
                     print(f"Rating episode ({item_count} of {num_items}): {item['Title']} ({item['Year']}) [S{item['Season']:02d}E{item['Episode']:02d}]: {item['Rating']}/10 on Trakt")
 
                 # Make the API call to rate the item
-                response = requests.post(rate_url, headers=headers, json=data)
-                time.sleep(1)
-                while response.status_code == 429:
-                    print("Rate limit exceeded. Waiting for 1 second...")
-                    time.sleep(1)
-                    response = requests.post(rate_url, headers=headers, json=data)
-                if response.status_code != 201:
-                    print(f"Error rating {item}: {response.content}")
+                response = errorHandling.make_trakt_request(rate_url, payload=data)
 
             print('Setting Trakt Ratings Complete')
         else:
