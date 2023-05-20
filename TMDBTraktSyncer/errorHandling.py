@@ -39,7 +39,7 @@ def make_trakt_request(url, headers=None, payload=None, max_retries=3):
             else:
                 response = requests.post(url, headers=headers, json=payload)
 
-            if response.status_code == 200:
+            if response.status_code in [200, 201, 204]:
                 return response  # Request succeeded, return response
             elif response.status_code in [429, 502, 503, 504, 520, 521, 522]:
                 # Server overloaded or rate limit exceeded, retry after delay
@@ -106,9 +106,9 @@ def make_tmdb_request(url, headers=None, payload=None, max_retries=3):
                 response = requests.post(url, headers=headers, json=payload)
 
             status_code = response.status_code
-            if status_code == 200:
+            if status_code in [1, 12, 13]:
                 return response  # Request succeeded, return response
-            elif status_code == 429:
+            elif status_code in [24, 25, 43, 46, 429]:
                 # Rate limit exceeded, retry after delay
                 retry_attempts += 1
                 time.sleep(retry_delay)
