@@ -1,9 +1,13 @@
 import requests
 import json
 import time
+try:
+    from TMDBTraktSyncer import errorHandling
+except:
+    import errorHandling
 
-def fetch_data(url, headers):
-    response = requests.get(url, headers=headers)
+def fetch_data(url):
+    response = errorHandling.make_tmdb_request(url)
     json_data = json.loads(response.text)
     results = json_data['results']
     total_pages = json_data['total_pages']
@@ -14,12 +18,7 @@ def getTMDBRatings(tmdb_v4_token):
     # Get TMDB Ratings
     print('Getting TMDB Ratings')
 
-    headers = {
-        'Content-Type': 'application/json',
-        'Authorization': f'Bearer {tmdb_v4_token}'
-    }
-
-    response = requests.get('https://api.themoviedb.org/3/account', headers=headers)
+    response = errorHandling.make_tmdb_request('https://api.themoviedb.org/3/account')
     json_data = json.loads(response.text)
     account_id = json_data['id']
 
@@ -29,7 +28,7 @@ def getTMDBRatings(tmdb_v4_token):
 
     while page <= total_pages:
         url = f'https://api.themoviedb.org/3/account/{account_id}/rated/movies?page={page}'
-        results, total_pages, _ = fetch_data(url, headers)
+        results, total_pages, _ = fetch_data(url)
         
         for movie in results:
             movie_ratings.append({'Title': movie['title'], 'Year': movie['release_date'][:4], 'Rating': movie['rating'], 'ID': movie['id'], 'Type': 'movie'})
@@ -44,7 +43,7 @@ def getTMDBRatings(tmdb_v4_token):
 
     while page <= total_pages:
         url = f'https://api.themoviedb.org/3/account/{account_id}/rated/tv?page={page}'
-        results, total_pages, _ = fetch_data(url, headers)
+        results, total_pages, _ = fetch_data(url)
         
         for show in results:
             show_ratings.append({'Title': show['name'], 'Year': show['first_air_date'][:4], 'Rating': show['rating'], 'ID': show['id'], 'Type': 'show'})
@@ -59,11 +58,11 @@ def getTMDBRatings(tmdb_v4_token):
 
     while page <= total_pages:
         url = f'https://api.themoviedb.org/3/account/{account_id}/rated/tv/episodes?page={page}'
-        results, total_pages, _ = fetch_data(url, headers)
+        results, total_pages, _ = fetch_data(url)
         
         for episode in results:
             show_id = episode['show_id']
-            response = requests.get(f'https://api.themoviedb.org/3/tv/{show_id}', headers=headers)
+            response = errorHandling.make_tmdb_request(f'https://api.themoviedb.org/3/tv/{show_id}')
             show_info = json.loads(response.text)
             show_name = show_info['name'] if 'name' in show_info else ''
             episode_title = f"{show_name}: {episode['name']}"

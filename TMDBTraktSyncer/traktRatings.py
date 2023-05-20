@@ -1,21 +1,18 @@
 import json
 import requests
+try:
+    from TMDBTraktSyncer import errorHandling
+except:
+    import errorHandling
 
 def getTraktRatings(trakt_client_id, trakt_access_token):
     # Get Trakt Ratings
     print('Getting Trakt Ratings')
 
-    headers = {
-        'Content-Type': 'application/json',
-        'trakt-api-version': '2',
-        'trakt-api-key': trakt_client_id,
-        'Authorization': f'Bearer {trakt_access_token}'
-    }
-
-    response = requests.get('https://api.trakt.tv/users/me', headers=headers)
+    response = errorHandling.make_trakt_request('https://api.trakt.tv/users/me')
     json_data = json.loads(response.text)
     username = json_data['username']
-    response = requests.get(f'https://api.trakt.tv/users/{username}/ratings', headers=headers)
+    response = errorHandling.make_trakt_request(f'https://api.trakt.tv/users/{username}/ratings')
     json_data = json.loads(response.text)
 
     movie_ratings = []
