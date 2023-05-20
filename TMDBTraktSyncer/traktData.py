@@ -1,5 +1,6 @@
 import json
 import requests
+import urllib.parse
 try:
     from TMDBTraktSyncer import errorHandling as EH
 except ImportError:
@@ -11,8 +12,9 @@ def getTraktRatings(trakt_client_id, trakt_access_token):
 
     response = EH.make_trakt_request('https://api.trakt.tv/users/me')
     json_data = json.loads(response.text)
-    username = json_data['username']
-    response = EH.make_trakt_request(f'https://api.trakt.tv/users/{username}/ratings')
+    username_slug = json_data['ids']['slug']
+    encoded_username = urllib.parse.quote(username_slug)
+    response = EH.make_trakt_request(f'https://api.trakt.tv/users/{encoded_username}/ratings')
     json_data = json.loads(response.text)
 
     movie_ratings = []
