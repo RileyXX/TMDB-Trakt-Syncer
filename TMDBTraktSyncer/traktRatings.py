@@ -7,7 +7,7 @@ except:
 
 def getTraktRatings(trakt_client_id, trakt_access_token):
     # Get Trakt Ratings
-    print('Getting Trakt Ratings')
+    print('Processing Trakt Ratings')
 
     response = errorHandling.make_trakt_request('https://api.trakt.tv/users/me')
     json_data = json.loads(response.text)
@@ -48,6 +48,6 @@ def getTraktRatings(trakt_client_id, trakt_access_token):
 
     trakt_ratings = movie_ratings + show_ratings + episode_ratings
 
-    print('Getting Trakt Ratings Complete')
+    print('Processing Trakt Ratings Complete')
     
     return trakt_ratings

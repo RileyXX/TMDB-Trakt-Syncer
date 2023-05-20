@@ -16,7 +16,7 @@ def fetch_data(url):
 
 def getTMDBRatings(tmdb_v4_token):
     # Get TMDB Ratings
-    print('Getting TMDB Ratings')
+    print('Processing TMDB Ratings')
 
     response = errorHandling.make_tmdb_request('https://api.themoviedb.org/3/account')
     json_data = json.loads(response.text)
@@ -82,6 +82,6 @@ def getTMDBRatings(tmdb_v4_token):
 
     tmdb_ratings = movie_ratings + show_ratings + episode_ratings
 
-    print('Getting TMDB Ratings Complete')
+    print('Processing TMDB Ratings Complete')
 
     return tmdb_ratings
