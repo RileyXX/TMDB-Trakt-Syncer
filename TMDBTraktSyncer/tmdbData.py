@@ -34,7 +34,6 @@ def getTMDBRatings(tmdb_v4_token):
             movie_ratings.append({'Title': movie['title'], 'Year': movie['release_date'][:4], 'Rating': movie['rating'], 'ID': movie['id'], 'Type': 'movie'})
         
         page += 1
-        time.sleep(1)
 
     # Fetch TV show ratings
     show_ratings = []
@@ -49,7 +48,6 @@ def getTMDBRatings(tmdb_v4_token):
             show_ratings.append({'Title': show['name'], 'Year': show['first_air_date'][:4], 'Rating': show['rating'], 'ID': show['id'], 'Type': 'show'})
         
         page += 1
-        time.sleep(1)
 
     # Fetch episode ratings
     episode_ratings = []
@@ -78,7 +76,6 @@ def getTMDBRatings(tmdb_v4_token):
             })
             
             page += 1
-            time.sleep(1)
 
     tmdb_ratings = movie_ratings + show_ratings + episode_ratings
 
