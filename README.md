@@ -57,6 +57,11 @@ _Replace `VERSION_NUMBER` with your [desired version](https://github.com/RileyXX
 6. Follow the prompts during the first run. You will need to enter your Trakt client ID and client secret from step 3, as well as your `tmdb_v4_token` from step 4. Please note that these details are saved insecurely as `credentials.txt` in the same folder as the script.
 7. Setup is complete. The script will continue running and syncing your ratings. You can monitor its progress in the command line.
 
+## For Setting Up Automation See the Following Sections:
+- Python Script to Update all Packages with Pip (Windows, Linux, Mac, ChromeOS, etc. [Link #1](https://github.com/RileyXX/TMDB-Trakt-Syncer/blob/main/README.md#python-script-to-update-all-packages-with-pip-windows-linux-mac-chromeos-etc)
+- Windows: Creating a .bat File to Run Multiple Python Projects and Optional Steps for Opening Programs and Creating a Shortcut to Run On Demand From Desktop. [Link #2](https://github.com/RileyXX/TMDB-Trakt-Syncer/blob/main/README.md#windows-creating-a-bat-file-to-run-multiple-python-projects-and-optional-steps-for-opening-programs-and-creating-a-shortcut-to-run-on-demand-from-desktop)
+- Windows: Auto-Running a File on Login, Once per Day, or Hourly using Task Scheduler (Background Execution. [Link #3](https://github.com/RileyXX/TMDB-Trakt-Syncer/blob/main/README.md#windows-auto-running-a-file-on-login-once-per-day-or-hourly-using-task-scheduler-background-execution)
+
 ## Troubleshooting, Known Issues, Workarounds & Future Outlook:
 * Add support for review/comment sync [Issue #1](https://github.com/RileyXX/TMDB-Trakt-Syncer/issues/1)
 * If any of your details change (passwords, logins, API keys, etc.), simply open `credentials.txt`, modify your details, save it and then run the script again. Alternatively, delete `credentials.txt` to reset the script and it will prompt you to enter your new details on the next run.
