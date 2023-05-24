@@ -6,14 +6,32 @@ try:
 except ImportError:
     import errorHandling as EH
 
-def getTraktRatings(trakt_client_id, trakt_access_token):
-    # Get Trakt Ratings
-    print('Processing Trakt Ratings')
+def getTraktData():
+    # Process Trakt Ratings and Comments
+    print('Processing Trakt Data')
 
     response = EH.make_trakt_request('https://api.trakt.tv/users/me')
     json_data = json.loads(response.text)
     username_slug = json_data['ids']['slug']
     encoded_username = urllib.parse.quote(username_slug)
+    
+    # Get Trakt Watchlist Items
+    response = EH.make_trakt_request(f'https://api.trakt.tv/users/{encoded_username}/watchlist?sort=added,asc')
+    json_data = json.loads(response.text)
+
+    trakt_watchlist = []
+
+    for item in json_data:
+        if item['type'] == 'movie':
+            movie = item.get('movie')
+            movie_id = movie.get('ids', {}).get('tmdb')
+            trakt_watchlist.append({'Title': movie.get('title'), 'Year': movie.get('year'), 'ID': movie_id, 'Type': 'movie'})
+        elif item['type'] == 'show':
+            show = item.get('show')
+            show_id = show.get('ids', {}).get('tmdb')
+            trakt_watchlist.append({'Title': show.get('title'), 'Year': show.get('year'), 'ID': show_id, 'Type': 'show'})
+
+    # Get Trakt Ratings
     response = EH.make_trakt_request(f'https://api.trakt.tv/users/{encoded_username}/ratings')
     json_data = json.loads(response.text)
 
@@ -50,6 +68,6 @@ def getTraktRatings(trakt_client_id, trakt_access_token):
 
     trakt_ratings = movie_ratings + show_ratings + episode_ratings
 
-    print('Processing Trakt Ratings Complete')
+    print('Processing Trakt Data')
     
-    return trakt_ratings
+    return trakt_watchlist, trakt_ratings
