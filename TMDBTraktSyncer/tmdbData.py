@@ -14,14 +14,45 @@ def fetch_data(url):
     current_page = json_data['page']
     return results, total_pages, current_page
 
-def getTMDBRatings(tmdb_v4_token):
-    # Get TMDB Ratings
-    print('Processing TMDB Ratings')
+def getTMDBRatings():
+    print('Processing TMDB Data')
 
+    # Fetch Account ID
     response = EH.make_tmdb_request('https://api.themoviedb.org/3/account')
     json_data = json.loads(response.text)
     account_id = json_data['id']
+    
+    # Fetch Movies Watchlist
+    movie_watchlist = []
+    page = 1
+    total_pages = 1
 
+    while page <= total_pages:
+        url = f'https://api.themoviedb.org/3/account/{account_id}/watchlist/movies?page={page}'
+        results, total_pages, _ = fetch_data(url)
+        
+        for movie in results:
+            movie_watchlist.append({'Title': movie['title'], 'Year': movie['release_date'][:4], 'ID': movie['id'], 'Type': 'movie'})
+        
+        page += 1
+
+    # Fetch TV Show Watchlist
+    show_watchlist = []
+    page = 1
+    total_pages = 1
+
+    while page <= total_pages:
+        url = f'https://api.themoviedb.org/3/account/{account_id}/watchlist/tv?page={page}'
+        results, total_pages, _ = fetch_data(url)
+        
+        for show in results:
+            show_watchlist.append({'Title': show['name'], 'Year': show['first_air_date'][:4], 'ID': show['id'], 'Type': 'show'})
+        
+        page += 1
+
+    tmdb_watchlist = movie_watchlist + show_watchlist
+
+    # Fetch Movie Ratings
     movie_ratings = []
     page = 1
     total_pages = 1
@@ -35,7 +66,7 @@ def getTMDBRatings(tmdb_v4_token):
         
         page += 1
 
-    # Fetch TV show ratings
+    # Fetch TV Show Ratings
     show_ratings = []
     page = 1
     total_pages = 1
@@ -49,7 +80,7 @@ def getTMDBRatings(tmdb_v4_token):
         
         page += 1
 
-    # Fetch episode ratings
+    # Fetch Episode Ratings
     episode_ratings = []
     page = 1
     total_pages = 1
@@ -79,6 +110,6 @@ def getTMDBRatings(tmdb_v4_token):
 
     tmdb_ratings = movie_ratings + show_ratings + episode_ratings
 
-    print('Processing TMDB Ratings Complete')
+    print('Processing TMDB Data Complete')
 
-    return tmdb_ratings
+    return tmdb_watchlist, tmdb_ratings
