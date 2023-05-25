@@ -17,6 +17,7 @@ DESCRIPTION = 'This python script syncs user watchlist and ratings for Movies, T
 setup(
     name="TMDBTraktSyncer",
     version=VERSION,
+    author="RileyXX",
     description=DESCRIPTION,
     long_description_content_type="text/markdown",
     long_description=long_description,
