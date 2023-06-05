@@ -68,6 +68,6 @@ def getTraktData():
 
     trakt_ratings = movie_ratings + show_ratings + episode_ratings
 
-    print('Processing Trakt Data')
+    print('Processing Trakt Data Complete')
     
     return trakt_watchlist, trakt_ratings
