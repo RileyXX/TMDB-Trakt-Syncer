@@ -118,7 +118,7 @@ def main():
                         print(f"Failed to add item ({item_count} of {num_items}): {item['Title']} ({item['Year']}) to Trakt Watchlist (TMDB ID: {item['ID']})")
                         print("Error Response:", response.content, response.status_code)
 
-                print('Trakt Watchlist Items Set Successfully')
+                print('Setting Trakt Watchlist Items Complete')
             else:
                 print('No Trakt Watchlist Items To Set')
 
