@@ -15,7 +15,7 @@ The script is compatible on any operating system that supports Python v3.6 or la
    - Application summary: `Use TMDB API and Trakt API to sync user ratings between platforms.`
    - Fill in the rest of the fields as desired and submit the form. Your API keys will be generated instantly.
 5. Run the script by running `TMDBTraktSyncer` in the command line.
-6. Follow the prompts during the first run. You will need to enter your Trakt client ID and client secret from step 3, as well as your `tmdb_v4_token` from step 4. Please note that these details are saved insecurely as `credentials.txt` in the same folder as the script.
+6. Follow the prompts during the first run. You will need to enter your Trakt `client ID` and `client secret` from step 3, as well as your `tmdb_v4_token` from step 4. Please note that these details are saved insecurely as `credentials.txt` in the same folder as the script.
 7. Setup is complete. The script will continue running and syncing your ratings. You can monitor its progress in the command line.
 
 ## Installing the Script:
@@ -56,7 +56,7 @@ _Replace `VERSION_NUMBER` with your [desired version](https://github.com/RileyXX
    - Application summary: `Use TMDB API and Trakt API to sync user ratings between platforms.`
    - Fill in the rest of the fields as desired and submit the form. Your API keys will be generated instantly.
 5. Run `TMDBTraktSyncer.py` or open the terminal and navigate to the folder where `TMDBTraktSyncer.py` is located, then run `TMDBTraktSyncer.py` in the terminal.
-6. Follow the prompts during the first run. You will need to enter your Trakt client ID and client secret from step 3, as well as your `tmdb_v4_token` from step 4. Please note that these details are saved insecurely as `credentials.txt` in the same folder as the script.
+6. Follow the prompts during the first run. You will need to enter your Trakt `client ID` and `client secret` from step 3, as well as your `tmdb_v4_token` from step 4. Please note that these details are saved insecurely as `credentials.txt` in the same folder as the script.
 7. Setup is complete. The script will continue running and syncing your ratings. You can monitor its progress in the command line.
 
 ## For Setting Up Automation See the Following Wiki Pages:
