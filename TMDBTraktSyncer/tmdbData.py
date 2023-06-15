@@ -32,7 +32,7 @@ def getTMDBRatings():
         results, total_pages, _ = fetch_data(url)
         
         for movie in results:
-            movie_watchlist.append({'Title': movie['title'], 'Year': movie['release_date'][:4], 'ID': movie['id'], 'Type': 'movie'})
+            movie_watchlist.append({'Title': movie['title'], 'Year': movie['release_date'][:4], 'TMDB_ID': movie['id'], 'Type': 'movie'})
         
         page += 1
 
@@ -46,7 +46,7 @@ def getTMDBRatings():
         results, total_pages, _ = fetch_data(url)
         
         for show in results:
-            show_watchlist.append({'Title': show['name'], 'Year': show['first_air_date'][:4], 'ID': show['id'], 'Type': 'show'})
+            show_watchlist.append({'Title': show['name'], 'Year': show['first_air_date'][:4], 'TMDB_ID': show['id'], 'Type': 'show'})
         
         page += 1
 
@@ -62,7 +62,7 @@ def getTMDBRatings():
         results, total_pages, _ = fetch_data(url)
         
         for movie in results:
-            movie_ratings.append({'Title': movie['title'], 'Year': movie['release_date'][:4], 'Rating': movie['rating'], 'ID': movie['id'], 'Type': 'movie'})
+            movie_ratings.append({'Title': movie['title'], 'Year': movie['release_date'][:4], 'Rating': movie['rating'], 'TMDB_ID': movie['id'], 'Type': 'movie'})
         
         page += 1
 
@@ -76,7 +76,7 @@ def getTMDBRatings():
         results, total_pages, _ = fetch_data(url)
         
         for show in results:
-            show_ratings.append({'Title': show['name'], 'Year': show['first_air_date'][:4], 'Rating': show['rating'], 'ID': show['id'], 'Type': 'show'})
+            show_ratings.append({'Title': show['name'], 'Year': show['first_air_date'][:4], 'Rating': show['rating'], 'TMDB_ID': show['id'], 'Type': 'show'})
         
         page += 1
 
@@ -99,7 +99,7 @@ def getTMDBRatings():
                 'Title': episode_title,
                 'Year': episode.get('air_date', '')[:4],
                 'Rating': episode.get('rating'),
-                'ID': episode.get('id'),
+                'TMDB_ID': episode.get('id'),
                 'Season': episode.get('season_number'),
                 'Episode': episode.get('episode_number'),
                 'ShowID': show_id,

@@ -2,9 +2,9 @@ import traceback
 import requests
 import time
 try:
-    from TMDBTraktSyncer import verifyCredentials
+    from TMDBTraktSyncer import verifyCredentials as VC
 except ImportError:
-    import verifyCredentials
+    import verifyCredentials as VC
 
 def report_error(error_message):
     github_issue_url = "https://github.com/RileyXX/TMDB-Trakt-Syncer/issues/new?template=bug_report.yml"
@@ -19,13 +19,13 @@ def report_error(error_message):
     print(f"Submit the error here: {github_issue_url}")
     print("-" * 50)
 
-def make_trakt_request(url, headers=None, payload=None, max_retries=3):
+def make_trakt_request(url, headers=None, params=None, payload=None, max_retries=3):
     if headers is None:
         headers = {
             'Content-Type': 'application/json',
             'trakt-api-version': '2',
-            'trakt-api-key': verifyCredentials.trakt_client_id,
-            'Authorization': f'Bearer {verifyCredentials.trakt_access_token}'
+            'trakt-api-key': VC.trakt_client_id,
+            'Authorization': f'Bearer {VC.trakt_access_token}'
         }
 
     retry_delay = 5  # seconds between retries
@@ -35,7 +35,10 @@ def make_trakt_request(url, headers=None, payload=None, max_retries=3):
         response = None
         try:
             if payload is None:
-                response = requests.get(url, headers=headers)
+                if params:
+                    response = requests.get(url, headers=headers, params=params)
+                else:
+                    response = requests.get(url, headers=headers)
             else:
                 response = requests.post(url, headers=headers, json=payload)
 
@@ -91,7 +94,7 @@ def make_tmdb_request(url, headers=None, payload=None, max_retries=3):
     if headers is None:
         headers = {
             'Content-Type': 'application/json',
-            'Authorization': f'Bearer {verifyCredentials.tmdb_v4_token}'
+            'Authorization': f'Bearer {VC.tmdb_v4_token}'
         }
 
     retry_delay = 5  # seconds between retries
