@@ -1,5 +1,9 @@
 import requests
 import time
+try:
+    from TMDBTraktSyncer import errorLogger as EL
+except ImportError:
+    import errorLogger as EL
 
 def make_trakt_request(url, headers=None, params=None, payload=None, max_retries=3):
     retry_delay = 5  # seconds between retries

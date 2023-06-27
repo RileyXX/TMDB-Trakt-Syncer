@@ -3,8 +3,10 @@ import requests
 import time
 try:
     from TMDBTraktSyncer import verifyCredentials as VC
+    from TMDBTraktSyncer import errorLogger as EL
 except ImportError:
     import verifyCredentials as VC
+    import errorLogger as EL
 
 def report_error(error_message):
     github_issue_url = "https://github.com/RileyXX/TMDB-Trakt-Syncer/issues/new?template=bug_report.yml"
@@ -51,15 +53,21 @@ def make_trakt_request(url, headers=None, params=None, payload=None, max_retries
                 retry_delay *= 2  # Exponential backoff for retries
             else:
                 # Handle other status codes as needed
-                error_message = get_trakt_message(response.status_code)
-                print(f"Request failed with status code {response.status_code}: {error_message}")
+                status_message = get_trakt_message(response.status_code)
+                error_message = f"Request failed with status code {response.status_code}: {status_message}"
+                print(f"   - {error_message}")
+                EL.logger.error(f"{error_message}. URL: {url}")
                 return None
 
         except requests.exceptions.RequestException as e:
-            print(f"Request failed with exception: {e}")
+            error_message = f"Request failed with exception: {e}"
+            print(f"   - {error_message}")
+            EL.logger.error(error_message, exc_info=True)
             return None
 
-    print("Max retry attempts reached with Trakt API, request failed.")
+    error_message = "Max retry attempts reached with Trakt API, request failed."
+    print(f"   - {error_message}")
+    EL.logger.error(error_message)
     return None
 
 def get_trakt_message(status_code):
@@ -109,6 +117,7 @@ def make_tmdb_request(url, headers=None, payload=None, max_retries=3):
                 response = requests.post(url, headers=headers, json=payload)
 
             status_code = response.status_code
+            
             if status_code in [200, 201]:
                 return response  # Request succeeded, return response
             elif status_code in [504, 429, 502, 503]:
@@ -116,24 +125,37 @@ def make_tmdb_request(url, headers=None, payload=None, max_retries=3):
                 retry_attempts += 1
                 time.sleep(retry_delay)
                 retry_delay *= 2  # Exponential backoff for retries
+                # Handle specific status codes as needed
+                status_message = get_tmdb_message(status_code)
+                error_message = f"Request failed with status code {status_code}: {status_message}. Retrying..."
+                print(f"   - {error_message}")
+                EL.logger.error(error_message)
             elif status_code in [501, 401, 405, 422, 404, 403, 409, 503, 500, 504, 429, 400, 406,
                                  422, 504, 429, 400, 400, 400, 401, 401, 401, 500, 401, 401, 401,
                                  404, 401, 401, 404, 401, 401, 404, 401, 200, 422, 405, 502, 500,
                                  403, 503, 400]:
                 # Handle specific status codes as needed
-                error_message = get_tmdb_message(status_code)
-                print(f"Request failed with status code {status_code}: {error_message}")
+                status_message = get_tmdb_message(status_code)
+                error_message = f"Request failed with status code {status_code}: {status_message}"
+                print(f"   - {error_message}")
+                EL.logger.error(error_message)
                 return None
             else:
                 # Request failed with an unknown status code
-                print(f"Request failed with unknown status code: {status_code}")
+                error_message = f"Request failed with unknown status code: {status_code}"
+                print(f"   - {error_message}")
+                EL.logger.error(error_message)
                 return None
 
         except requests.exceptions.RequestException as e:
-            print(f"Request failed with exception: {e}")
+            error_message = f"Request failed with exception: {e}"
+            print(f"   - {error_message}")
+            EL.logger.error(error_message, exc_info=True)
             return None
 
-    print("Max retry attempts reached with TMDB API, request failed.")
+    error_message = "Max retry attempts reached with TMDB API, request failed."
+    print(f"   - {error_message}")
+    EL.logger.error(error_message)
     return None
 
 def get_tmdb_message(status_code):
