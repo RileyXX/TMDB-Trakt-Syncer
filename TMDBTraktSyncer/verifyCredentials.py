@@ -2,8 +2,10 @@ import os
 import json
 try:
     from TMDBTraktSyncer import authTrakt
+    from TMDBTraktSyncer import errorLogger as EL
 except ImportError:
     import authTrakt
+    import errorLogger as EL
 
 def prompt_get_credentials():
     # Define the file path
@@ -65,6 +67,8 @@ def prompt_sync_ratings():
             if sync_ratings_value is not None:
                 return sync_ratings_value
     except FileNotFoundError:
+        error_message = "File not found error"
+        EL.logger.error(error_message, exc_info=True)
         pass
 
     while True:
@@ -89,6 +93,8 @@ def prompt_sync_ratings():
         with open(file_path, 'r', encoding='utf-8') as file:
             credentials = json.load(file)
     except FileNotFoundError:
+        error_message = "File not found error"
+        EL.logger.error(error_message, exc_info=True)
         pass
 
     credentials['sync_ratings'] = sync_ratings_value
@@ -112,6 +118,8 @@ def prompt_sync_watchlist():
             if sync_watchlist_value is not None:
                 return sync_watchlist_value
     except FileNotFoundError:
+        error_message = "File not found error"
+        EL.logger.error(error_message, exc_info=True)
         pass
 
     while True:
@@ -136,6 +144,8 @@ def prompt_sync_watchlist():
         with open(file_path, 'r', encoding='utf-8') as file:
             credentials = json.load(file)
     except FileNotFoundError:
+        error_message = "File not found error"
+        EL.logger.error(error_message, exc_info=True)
         pass
 
     credentials['sync_watchlist'] = sync_watchlist_value
@@ -159,6 +169,8 @@ def prompt_remove_watched_from_watchlists():
             if remove_watched_from_watchlists_value is not None:
                 return remove_watched_from_watchlists_value
     except FileNotFoundError:
+        error_message = "File not found error"
+        EL.logger.error(error_message, exc_info=True)
         pass
 
     while True:
@@ -185,6 +197,8 @@ def prompt_remove_watched_from_watchlists():
         with open(file_path, 'r', encoding='utf-8') as file:
             credentials = json.load(file)
     except FileNotFoundError:
+        error_message = "File not found error"
+        EL.logger.error(error_message, exc_info=True)
         pass
 
     credentials['remove_watched_from_watchlists'] = remove_watched_from_watchlists_value

@@ -4,8 +4,10 @@ import urllib.parse
 import datetime
 try:
     from TMDBTraktSyncer import errorHandling as EH
+    from TMDBTraktSyncer import errorLogger as EL
 except ImportError:
     import errorHandling as EH
+    import errorLogger as EL
 
 def getTraktData():
     # Process Trakt Ratings and Comments

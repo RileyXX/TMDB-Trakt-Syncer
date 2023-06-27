@@ -3,8 +3,10 @@ import json
 import time
 try:
     from TMDBTraktSyncer import errorHandling as EH
+    from TMDBTraktSyncer import errorLogger as EL
 except ImportError:
     import errorHandling as EH
+    import errorLogger as EL
 
 def fetch_data(url):
     response = EH.make_tmdb_request(url)
