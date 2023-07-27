@@ -46,7 +46,7 @@ python -m pip install TMDBTraktSyncer==VERSION_NUMBER
 _Replace `VERSION_NUMBER` with your [desired version](https://github.com/RileyXX/TMDB-Trakt-Syncer/releases) (e.g. 1.0.1) and run in your operating system's native command line._
 
 ## Alternative Manual Installation Method (without pip install):
-1. Install [Python](https://www.python.org/downloads/) (v3.6 or later).
+1. Install [Python](https://www.python.org/downloads/) (v3.6 or later). During installation, make sure to tick the box for adding Python to your PATH variable when prompted.
 2. Download the latest .zip from the [releases page](https://github.com/RileyXX/TMDB-Trakt-Syncer/releases) and extract it to the desired directory.
 3. Login to [Trakt](https://trakt.tv/oauth/applications) and create a new API application named `TMDBTraktSyncer`. In the "Redirect uri" field, enter `urn:ietf:wg:oauth:2.0:oob`, then save the application.
 4. Login to [TMDB](https://www.themoviedb.org/settings/api/) and create a new API application. Choose "Developer" and accept the terms. Fill out the application form as follows: 
