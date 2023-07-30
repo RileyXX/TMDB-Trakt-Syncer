@@ -16,7 +16,7 @@ def fetch_data(url):
     current_page = json_data['page']
     return results, total_pages, current_page
 
-def getTMDBRatings():
+def getTMDBData():
     print('Processing TMDB Data')
 
     # Fetch Account ID
@@ -60,11 +60,11 @@ def getTMDBRatings():
     total_pages = 1
 
     while page <= total_pages:
-        url = f'https://api.themoviedb.org/3/account/{account_id}/rated/movies?page={page}'
+        url = f'https://api.themoviedb.org/4/account/{account_id}/movie/rated?page={page}'
         results, total_pages, _ = fetch_data(url)
         
         for movie in results:
-            movie_ratings.append({'Title': movie['title'], 'Year': movie['release_date'][:4], 'Rating': movie['rating'], 'TMDB_ID': movie['id'], 'Type': 'movie'})
+            movie_ratings.append({'Title': movie['title'], 'Year': movie['release_date'][:4], 'Rating': movie['account_rating']['value'], 'TMDB_ID': movie['id'], 'Date_Added': movie['account_rating']['created_at'], 'Type': 'movie'})
         
         page += 1
 
@@ -74,11 +74,11 @@ def getTMDBRatings():
     total_pages = 1
 
     while page <= total_pages:
-        url = f'https://api.themoviedb.org/3/account/{account_id}/rated/tv?page={page}'
+        url = f'https://api.themoviedb.org/4/account/{account_id}/tv/rated?page={page}'
         results, total_pages, _ = fetch_data(url)
         
         for show in results:
-            show_ratings.append({'Title': show['name'], 'Year': show['first_air_date'][:4], 'Rating': show['rating'], 'TMDB_ID': show['id'], 'Type': 'show'})
+            show_ratings.append({'Title': show['name'], 'Year': show['first_air_date'][:4], 'Rating': show['account_rating']['value'], 'TMDB_ID': show['id'], 'Date_Added': movie['account_rating']['created_at'], 'Type': 'show'})
         
         page += 1
 
@@ -105,6 +105,7 @@ def getTMDBRatings():
                 'Season': episode.get('season_number'),
                 'Episode': episode.get('episode_number'),
                 'ShowID': show_id,
+                'Date_Added': None,
                 'Type': 'episode'
             })
             
