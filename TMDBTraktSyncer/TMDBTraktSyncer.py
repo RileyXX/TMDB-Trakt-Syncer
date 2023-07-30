@@ -1,7 +1,6 @@
 import json
 import requests
 import time
-from datetime import datetime
 try:
     from TMDBTraktSyncer import verifyCredentials as VC
     from TMDBTraktSyncer import traktData
@@ -20,7 +19,7 @@ def main():
     try:
             
         trakt_watchlist, trakt_ratings, watched_content = traktData.getTraktData()
-        tmdb_watchlist, tmdb_ratings = tmdbData.getTMDBData()
+        tmdb_watchlist, tmdb_ratings = tmdbData.getTMDBRatings()
 
         #Get trakt and tmdb ratings and filter out trakt ratings with missing tmdb id
         trakt_ratings = [rating for rating in trakt_ratings if rating['TMDB_ID'] is not None]
@@ -32,38 +31,6 @@ def main():
         trakt_ratings_to_set = [rating for rating in tmdb_ratings if rating['TMDB_ID'] not in [trakt_rating['TMDB_ID'] for trakt_rating in trakt_ratings]]
         tmdb_watchlist_to_set = [item for item in trakt_watchlist if item['TMDB_ID'] not in [tmdb_item['TMDB_ID'] for tmdb_item in tmdb_watchlist]]
         trakt_watchlist_to_set = [item for item in tmdb_watchlist if item['TMDB_ID'] not in [trakt_item['TMDB_ID'] for trakt_item in trakt_watchlist]]
-        
-        # Filter ratings to update
-        tmdb_ratings_to_update = []
-        trakt_ratings_to_update = []
-
-        # Dictionary to store TMDB_IDs and their corresponding ratings for TMDB and Trakt
-        tmdb_ratings_dict = {rating['TMDB_ID']: rating for rating in tmdb_ratings}
-        trakt_ratings_dict = {rating['TMDB_ID']: rating for rating in trakt_ratings}
-
-        # Include only items with the same TMDB_ID and different ratings and prefer the most recent rating
-        for tmdb_id, tmdb_rating in tmdb_ratings_dict.items():
-            if tmdb_id in trakt_ratings_dict:
-                trakt_rating = trakt_ratings_dict[tmdb_id]
-                # Convert ratings to float before comparing
-                tmdb_rating_value = float(tmdb_rating['Rating'])
-                trakt_rating_value = float(trakt_rating['Rating'])
-                
-                if tmdb_rating_value != trakt_rating_value:
-                    # Check if both tmdb_rating and trakt_rating have Date_Added values
-                    if tmdb_rating['Date_Added'] is not None and trakt_rating['Date_Added'] is not None:
-                        tmdb_date_added = datetime.fromisoformat(tmdb_rating['Date_Added'])
-                        trakt_date_added = datetime.fromisoformat(trakt_rating['Date_Added'])
-                    
-                        # If TMDB rating is more recent, add the Trakt rating to the update list, and vice versa
-                        if tmdb_date_added > trakt_date_added:
-                            trakt_ratings_to_update.append(tmdb_rating)
-                        else:
-                            tmdb_ratings_to_update.append(trakt_rating)
-
-        # Update ratings_to_set
-        tmdb_ratings_to_set.extend(tmdb_ratings_to_update)
-        trakt_ratings_to_set.extend(trakt_ratings_to_update)
         
         # If remove_watched_from_watchlists_value is true
         if VC.remove_watched_from_watchlists_value:        
