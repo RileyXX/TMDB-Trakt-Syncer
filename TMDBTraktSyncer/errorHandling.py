@@ -21,7 +21,7 @@ def report_error(error_message):
     print(f"Submit the error here: {github_issue_url}")
     print("-" * 50)
 
-def make_trakt_request(url, headers=None, params=None, payload=None, max_retries=3):
+def make_trakt_request(url, headers=None, params=None, payload=None, max_retries=5):
     if headers is None:
         headers = {
             'Content-Type': 'application/json',
@@ -30,7 +30,7 @@ def make_trakt_request(url, headers=None, params=None, payload=None, max_retries
             'Authorization': f'Bearer {VC.trakt_access_token}'
         }
 
-    retry_delay = 5  # seconds between retries
+    retry_delay = 1  # seconds between retries
     retry_attempts = 0
 
     while retry_attempts < max_retries:
@@ -98,14 +98,14 @@ def get_trakt_message(status_code):
 
     return error_messages.get(status_code, "Unknown error")
 
-def make_tmdb_request(url, headers=None, payload=None, max_retries=3):
+def make_tmdb_request(url, headers=None, payload=None, max_retries=5):
     if headers is None:
         headers = {
             'Content-Type': 'application/json',
             'Authorization': f'Bearer {VC.tmdb_v4_token}'
         }
 
-    retry_delay = 5  # seconds between retries
+    retry_delay = 1  # seconds between retries
     retry_attempts = 0
 
     while retry_attempts < max_retries:
