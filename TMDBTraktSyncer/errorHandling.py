@@ -102,7 +102,7 @@ def make_tmdb_request(url, headers=None, payload=None, max_retries=5):
     if headers is None:
         headers = {
             'Content-Type': 'application/json',
-            'Authorization': f'Bearer {VC.tmdb_v4_token}'
+            'Authorization': f'Bearer {VC.tmdb_access_token}'
         }
 
     retry_delay = 1  # seconds between retries
