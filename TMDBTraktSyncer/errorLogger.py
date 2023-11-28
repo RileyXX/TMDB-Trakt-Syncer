@@ -1,7 +1,6 @@
 import os
 import logging
 import traceback
-import selenium.webdriver
 from logging.handlers import RotatingFileHandler
 
 class CustomFormatter(logging.Formatter):
