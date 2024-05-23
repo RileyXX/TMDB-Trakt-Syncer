@@ -1,21 +1,23 @@
-import json
-import requests
-import time
-try:
-    from TMDBTraktSyncer import verifyCredentials as VC
-    from TMDBTraktSyncer import traktData
-    from TMDBTraktSyncer import tmdbData
-    from TMDBTraktSyncer import errorHandling as EH
-    from TMDBTraktSyncer import errorLogger as EL
-except ImportError:
-    import verifyCredentials as VC
-    import traktData
-    import tmdbData
-    import errorHandling as EH
-    import errorLogger as EL
-
-
 def main():
+    print("Starting TMDBTraktSyncer....")
+    import json
+    import requests
+    import time
+    try:
+        from TMDBTraktSyncer import checkVersion
+        from TMDBTraktSyncer import verifyCredentials as VC
+        from TMDBTraktSyncer import traktData
+        from TMDBTraktSyncer import tmdbData
+        from TMDBTraktSyncer import errorHandling as EH
+        from TMDBTraktSyncer import errorLogger as EL
+    except ImportError:
+        import checkVersion
+        import verifyCredentials as VC
+        import traktData
+        import tmdbData
+        import errorHandling as EH
+        import errorLogger as EL
+
     try:
             
         trakt_watchlist, trakt_ratings, watched_content = traktData.getTraktData()
@@ -349,6 +351,8 @@ def main():
                 print('Removing Watched Items From TMDB Watchlist Complete')
             else:
                 print('No Watched Items To Remove From TMDB Watchlist')
+
+        print("TMDBTraktSyncer Complete")
         
     except Exception as e:
         error_message = "An error occurred while running the script."
