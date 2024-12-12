@@ -67,7 +67,7 @@ def main():
                 
                 for item in tmdb_watchlist_to_set:
                     item_count += 1
-                    print(f" - Adding item ({item_count} of {num_items}): {item['Title']} ({item['Year']}) to TMDB Watchlist")
+                    print(f" - Adding item ({item_count} of {num_items}): {item['Title']} ({item['Year']}) to TMDB Watchlist (TMDB ID: {item['TMDB_ID']})")
                     payload = {}  # Add any additional payload parameters if required
                     if item['Type'] == 'movie':
                         url = f"https://api.themoviedb.org/3/account/{account_id}/watchlist"
@@ -102,7 +102,7 @@ def main():
 
                 for item in trakt_watchlist_to_set:
                     item_count += 1
-                    print(f" - Adding item ({item_count} of {num_items}): {item['Title']} ({item['Year']}) to Trakt Watchlist")
+                    print(f" - Adding item ({item_count} of {num_items}): {item['Title']} ({item['Year']}) to Trakt Watchlist (TMDB ID: {item['TMDB_ID']})")
                     tmdb_id = item['TMDB_ID']
                     media_type = item['Type']  # 'movie', 'show', or 'episode'
 
@@ -164,26 +164,26 @@ def main():
                             'value': item['Rating']
                         }
                         url = f"https://api.themoviedb.org/3/movie/{item['TMDB_ID']}/rating"
-                        print(f" - Rating movie ({item_count} of {num_items}): {item['Title']} ({item['Year']}): {item['Rating']}/10 on TMDB")
+                        print(f" - Rating movie ({item_count} of {num_items}): {item['Title']} ({item['Year']}): {item['Rating']}/10 on TMDB (TMDB ID: {item['TMDB_ID']})")
 
                     elif item['Type'] == 'show':
                         payload = {
                             'value': item['Rating']
                         }
                         url = f"https://api.themoviedb.org/3/tv/{item['TMDB_ID']}/rating"
-                        print(f" - Rating TV show ({item_count} of {num_items}): {item['Title']} ({item['Year']}): {item['Rating']}/10 on TMDB")
+                        print(f" - Rating TV show ({item_count} of {num_items}): {item['Title']} ({item['Year']}): {item['Rating']}/10 on TMDB (TMDB ID: {item['TMDB_ID']})")
 
                     elif item['Type'] == 'episode':
                         payload = {
                             'value': item['Rating']
                         }
                         url = f"https://api.themoviedb.org/3/tv/{item['TMDB_ShowID']}/season/{item['Season']}/episode/{item['Episode']}/rating"
-                        print(f" - Rating episode ({item_count} of {num_items}): {item['Title']} ({item['Year']}) [S{item['Season']:02d}E{item['Episode']:02d}]: {item['Rating']}/10 on TMDB")
+                        print(f" - Rating episode ({item_count} of {num_items}): {item['Title']} ({item['Year']}) [S{item['Season']:02d}E{item['Episode']:02d}]: {item['Rating']}/10 on TMDB (TMDB ID: {item['TMDB_ID']})")
 
                     response = EH.make_tmdb_request(url, payload=payload)
                     
                     if response is None:
-                        error_message = f"Failed rating item ({item_count} of {num_items}): {item['Title']} ({item['Year']}): {item['Rating']}/10 on TMDB"
+                        error_message = f"Failed rating item ({item_count} of {num_items}): {item['Title']} ({item['Year']}): {item['Rating']}/10 on TMDB (TMDB ID: {item['TMDB_ID']})"
                         print(f"   - {error_message}")
                         EL.logger.error(error_message)
 
@@ -215,7 +215,7 @@ def main():
                                 "rating": item["Rating"]
                             }]
                         }
-                        print(f" - Rating TV show ({item_count} of {num_items}): {item['Title']} ({item['Year']}): {item['Rating']}/10 on Trakt")
+                        print(f" - Rating TV show ({item_count} of {num_items}): {item['Title']} ({item['Year']}): {item['Rating']}/10 on Trakt (TMDB ID: {item['TMDB_ID']})")
                     elif item["Type"] == "movie":
                         # This is a movie
                         data = {
@@ -226,7 +226,7 @@ def main():
                                 "rating": item["Rating"]
                             }]
                         }
-                        print(f" - Rating movie ({item_count} of {num_items}): {item['Title']} ({item['Year']}): {item['Rating']}/10 on Trakt")
+                        print(f" - Rating movie ({item_count} of {num_items}): {item['Title']} ({item['Year']}): {item['Rating']}/10 on Trakt (TMDB ID: {item['TMDB_ID']})")
                     elif item["Type"] == "episode":
                         # This is an episode
                         data = {
@@ -237,13 +237,13 @@ def main():
                                 "rating": item["Rating"]
                             }]
                         }
-                        print(f" - Rating episode ({item_count} of {num_items}): {item['Title']} ({item['Year']}) [S{item['Season']:02d}E{item['Episode']:02d}]: {item['Rating']}/10 on Trakt")
+                        print(f" - Rating episode ({item_count} of {num_items}): {item['Title']} ({item['Year']}) [S{item['Season']:02d}E{item['Episode']:02d}]: {item['Rating']}/10 on Trakt (TMDB ID: {item['TMDB_ID']})")
 
                     # Make the API call to rate the item
                     response = EH.make_trakt_request(rate_url, payload=data)
                     
                     if response is None:
-                        error_message = f"Failed rating item ({item_count} of {num_items}): {item['Title']} ({item['Year']}): {item['Rating']}/10 on Trakt"
+                        error_message = f"Failed rating item ({item_count} of {num_items}): {item['Title']} ({item['Year']}): {item['Rating']}/10 on Trakt (TMDB ID: {item['TMDB_ID']})"
                         print(f"   - {error_message}")
                         EL.logger.error(error_message)
 
@@ -277,7 +277,7 @@ def main():
                                 }
                             }]
                         }
-                        print(f" - Removing TV show ({item_count} of {num_items}): {item['Title']} ({item['Year']}) from Trakt Watchlist")
+                        print(f" - Removing TV show ({item_count} of {num_items}): {item['Title']} ({item['Year']}) from Trakt Watchlist (TMDB ID: {item['TMDB_ID']})")
                     elif item["Type"] == "movie":
                         # This is a movie
                         data = {
@@ -287,7 +287,7 @@ def main():
                                 }
                             }]
                         }
-                        print(f" - Removing movie ({item_count} of {num_items}): {item['Title']} ({item['Year']}) from Trakt Watchlist")
+                        print(f" - Removing movie ({item_count} of {num_items}): {item['Title']} ({item['Year']}) from Trakt Watchlist (TMDB ID: {item['TMDB_ID']})")
                     elif item["Type"] == "episode":
                         # This is an episode
                         data = {
@@ -297,13 +297,13 @@ def main():
                                 }
                             }]
                         }
-                        print(f" - Removing episode ({item_count} of {num_items}): {item['Title']} ({item['Year']}) from Trakt Watchlist")
+                        print(f" - Removing episode ({item_count} of {num_items}): {item['Title']} ({item['Year']}) from Trakt Watchlist (TMDB ID: {item['TMDB_ID']})")
 
                     # Make the API call to remove the item from the watchlist
                     response = EH.make_trakt_request(remove_url, payload=data)
 
                     if response is None:
-                        error_message = f"Failed removing {item['Type']} ({item_count} of {num_items}): {item['Title']} ({item['Year']}) from Trakt Watchlist"
+                        error_message = f"Failed removing {item['Type']} ({item_count} of {num_items}): {item['Title']} ({item['Year']}) from Trakt Watchlist (TMDB ID: {item['TMDB_ID']})"
                         print(f"   - {error_message}")
                         EL.logger.error(error_message)
 
@@ -326,7 +326,7 @@ def main():
                 
                 for item in tmdb_watchlist_items_to_remove:
                     item_count += 1
-                    print(f" - Removing item ({item_count} of {num_items}): {item['Title']} ({item['Year']}) from TMDB Watchlist")
+                    print(f" - Removing item ({item_count} of {num_items}): {item['Title']} ({item['Year']}) from TMDB Watchlist (TMDB ID: {item['TMDB_ID']})")
                     payload = {}  # Add any additional payload parameters if required
                     if item['Type'] == 'movie':
                         url = f"https://api.themoviedb.org/3/account/{account_id}/watchlist"
@@ -343,7 +343,7 @@ def main():
                         response = EH.make_tmdb_request(url, payload=payload)
                     
                     if response is None:
-                        error_message = f"Failed to remove item ({item_count} of {num_items}): {item['Title']} ({item['Year']}) from TMDB Watchlist (TMDB ID: {item['TMDB_ID']})"
+                        error_message = f"Failed to remove item ({item_count} of {num_items}): {item['Title']} ({item['Year']}) from TMDB Watchlist (TMDB ID: {item['TMDB_ID']}) (TMDB ID: {item['TMDB_ID']})"
                         print(f"   - {error_message}")
                         EL.logger.error(error_message)
 
