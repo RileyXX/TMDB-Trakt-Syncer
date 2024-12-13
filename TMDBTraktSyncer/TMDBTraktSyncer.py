@@ -343,7 +343,7 @@ def main():
                         response = EH.make_tmdb_request(url, payload=payload)
                     
                     if response is None:
-                        error_message = f"Failed to remove item ({item_count} of {num_items}): {item['Title']} ({item['Year']}) from TMDB Watchlist (TMDB ID: {item['TMDB_ID']}) (TMDB ID: {item['TMDB_ID']})"
+                        error_message = f"Failed to remove item ({item_count} of {num_items}): {item['Title']} ({item['Year']}) from TMDB Watchlist (TMDB ID: {item['TMDB_ID']})"
                         print(f"   - {error_message}")
                         EL.logger.error(error_message)
 

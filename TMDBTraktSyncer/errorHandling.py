@@ -1,5 +1,6 @@
 import traceback
 import requests
+from requests.exceptions import RequestException, ConnectionError, Timeout
 import time
 try:
     from TMDBTraktSyncer import verifyCredentials as VC
@@ -29,21 +30,22 @@ def make_trakt_request(url, headers=None, params=None, payload=None, max_retries
             'trakt-api-key': VC.trakt_client_id,
             'Authorization': f'Bearer {VC.trakt_access_token}'
         }
-
-    retry_delay = 1  # seconds between retries
+    
+    retry_delay = 1  # Initial seconds between retries
     retry_attempts = 0
+    connection_timeout = 20
 
     while retry_attempts < max_retries:
         response = None
         try:
             if payload is None:
                 if params:
-                    response = requests.get(url, headers=headers, params=params)
+                    response = requests.get(url, headers=headers, params=params, timeout=connection_timeout)
                 else:
-                    response = requests.get(url, headers=headers)
+                    response = requests.get(url, headers=headers, timeout=connection_timeout)
             else:
-                response = requests.post(url, headers=headers, json=payload)
-
+                response = requests.post(url, headers=headers, json=payload, timeout=connection_timeout)
+            
             if response.status_code in [200, 201, 204]:
                 return response  # Request succeeded, return response
             elif response.status_code in [429, 500, 502, 503, 504, 520, 521, 522]:
@@ -58,13 +60,21 @@ def make_trakt_request(url, headers=None, params=None, payload=None, max_retries
                 print(f"   - {error_message}")
                 EL.logger.error(f"{error_message}. URL: {url}")
                 return None
-
-        except requests.exceptions.RequestException as e:
-            error_message = f"Request failed with exception: {e}"
+        except (ConnectionError, Timeout) as conn_err:
+            # Handle connection reset and timeout
+            retry_attempts += 1
+            print(f"   - Connection error: {conn_err}. Retrying ({retry_attempts}/{max_retries})...")
+            EL.logger.warning(f"Connection error: {conn_err}. Retrying ({retry_attempts}/{max_retries})...")
+            time.sleep(retry_delay)
+            retry_delay *= 2  # Exponential backoff
+        except RequestException as req_err:
+            # Handle other request-related exceptions
+            error_message = f"Request failed with exception: {req_err}"
             print(f"   - {error_message}")
             EL.logger.error(error_message, exc_info=True)
             return None
 
+    # If all retries fail
     error_message = "Max retry attempts reached with Trakt API, request failed."
     print(f"   - {error_message}")
     EL.logger.error(error_message)
@@ -95,7 +105,6 @@ def get_trakt_message(status_code):
         521: "Service Unavailable - Cloudflare error",
         522: "Service Unavailable - Cloudflare error"
     }
-
     return error_messages.get(status_code, "Unknown error")
 
 def make_tmdb_request(url, headers=None, payload=None, max_retries=5):
@@ -107,47 +116,47 @@ def make_tmdb_request(url, headers=None, payload=None, max_retries=5):
 
     retry_delay = 1  # seconds between retries
     retry_attempts = 0
+    connection_timeout = 20
 
     while retry_attempts < max_retries:
         response = None
         try:
             if payload is None:
-                response = requests.get(url, headers=headers)
+                response = requests.get(url, headers=headers, timeout=connection_timeout)
             else:
-                response = requests.post(url, headers=headers, json=payload)
+                response = requests.post(url, headers=headers, json=payload, timeout=connection_timeout)
 
             status_code = response.status_code
             
             if status_code in [200, 201]:
                 return response  # Request succeeded, return response
             elif status_code in [504, 429, 502, 503]:
-                # Rate limit exceeded, retry after delay
+                # Rate limit exceeded or temporary server issues
                 retry_attempts += 1
                 time.sleep(retry_delay)
                 retry_delay *= 2  # Exponential backoff for retries
-                # Handle specific status codes as needed
                 status_message = get_tmdb_message(status_code)
                 error_message = f"Request failed with status code {status_code}: {status_message}. Retrying..."
                 print(f"   - {error_message}")
                 EL.logger.error(error_message)
-            elif status_code in [501, 401, 405, 422, 404, 403, 409, 503, 500, 504, 429, 400, 406,
-                                 422, 504, 429, 400, 400, 400, 401, 401, 401, 500, 401, 401, 401,
-                                 404, 401, 401, 404, 401, 401, 404, 401, 200, 422, 405, 502, 500,
-                                 403, 503, 400]:
-                # Handle specific status codes as needed
+            else:
+                # Other known errors or unexpected status codes
                 status_message = get_tmdb_message(status_code)
                 error_message = f"Request failed with status code {status_code}: {status_message}"
                 print(f"   - {error_message}")
                 EL.logger.error(error_message)
                 return None
-            else:
-                # Request failed with an unknown status code
-                error_message = f"Request failed with unknown status code: {status_code}"
-                print(f"   - {error_message}")
-                EL.logger.error(error_message)
-                return None
 
-        except requests.exceptions.RequestException as e:
+        except ConnectionError as ce:
+            # Handle connection reset or dropped connection
+            retry_attempts += 1
+            error_message = f"Connection error: {ce}. Retrying {retry_attempts}/{max_retries}..."
+            print(f"   - {error_message}")
+            EL.logger.error(error_message, exc_info=True)
+            time.sleep(retry_delay)
+            retry_delay *= 2  # Exponential backoff
+        except RequestException as e:
+            # Handle other request exceptions
             error_message = f"Request failed with exception: {e}"
             print(f"   - {error_message}")
             EL.logger.error(error_message, exc_info=True)
