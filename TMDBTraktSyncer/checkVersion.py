@@ -45,7 +45,7 @@ def checkVersion():
     if compare_versions(installed_version, latest_version):
         print(f"A new version of TMDBTraktSyncer is available: {latest_version} (installed: {installed_version}).")
         print("To update use: python -m pip install TMDBTraktSyncer --upgrade")
-        print("Documentation: https://github.com/RileyXX/TMDB-Trakt-Syncer")
+        print("Documentation: https://github.com/RileyXX/TMDB-Trakt-Syncer/releases")
     # else:
         # print(f"TMDBTraktSyncer is up to date (installed: {installed_version})")
 
