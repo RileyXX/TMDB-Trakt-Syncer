@@ -63,11 +63,12 @@ def make_trakt_request(url, headers=None, params=None, payload=None, max_retries
 
                 # Respect the 'Retry-After' header if provided, otherwise use default delay
                 retry_after = int(response.headers.get('Retry-After', retry_delay))
-                remaining_time = total_wait_time - sum(retry_delay * (2 ** i) for i in range(retry_attempts))
-                print(f"   - Server returned {response.status_code}. Retrying after {retry_after}s... "
-                      f"({retry_attempts}/{max_retries}) - Time remaining: {remaining_time}s")
-                EL.logger.warning(f"Server returned {response.status_code}. Retrying after {retry_after}s... "
-                                  f"({retry_attempts}/{max_retries}) - Time remaining: {remaining_time}s")
+                if response.status_code != 429:
+                    remaining_time = total_wait_time - sum(retry_delay * (2 ** i) for i in range(retry_attempts))
+                    print(f"   - Server returned {response.status_code}. Retrying after {retry_after}s... "
+                          f"({retry_attempts}/{max_retries}) - Time remaining: {remaining_time}s")
+                    EL.logger.warning(f"Server returned {response.status_code}. Retrying after {retry_after}s... "
+                                      f"({retry_attempts}/{max_retries}) - Time remaining: {remaining_time}s")
 
                 time.sleep(retry_after)  # Wait before retrying
                 retry_delay *= 2  # Apply exponential backoff for retries
@@ -173,13 +174,15 @@ def make_tmdb_request(url, headers=None, payload=None, max_retries=5):
                 time_remaining = sum(retry_delay * (2 ** i) for i in range(max_retries - retry_attempts))
                 time.sleep(retry_delay)
                 retry_delay *= 2  # Exponential backoff
-                status_message = get_tmdb_message(status_code)
-                error_message = (
-                    f"Request failed with status code {status_code}: {status_message}. "
-                    f"Retrying {retry_attempts}/{max_retries}. Time remaining: {time_remaining}s"
-                )
-                print(f"   - {error_message}")
-                EL.logger.error(error_message)
+                # Skip logging rate limit errors
+                if status_code != 429:
+                    status_message = get_tmdb_message(status_code)
+                    error_message = (
+                        f"Request failed with status code {status_code}: {status_message}. "
+                        f"Retrying {retry_attempts}/{max_retries}. Time remaining: {time_remaining}s"
+                    )
+                    print(f"   - {error_message}")
+                    EL.logger.error(error_message)
             else:
                 # Non-retryable errors, exit loop and return None
                 status_message = get_tmdb_message(status_code)
