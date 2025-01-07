@@ -35,29 +35,77 @@ python -m pip install TMDBTraktSyncer --upgrade
 _Run in your operating system's native command line._
 ## Uninstalling the Script:
 ```
-python -m pip uninstall TMDBTraktSyncer
+TMDBTraktSyncer --uninstall
 ```
-_Run in your operating system's native command line._
-
+_Clears cached browsers, drivers and error logs before uninstalling. Run in your operating system's native command line._
 ## Installing a Specific Version:
 ```
 python -m pip install TMDBTraktSyncer==VERSION_NUMBER
 ```
-_Replace `VERSION_NUMBER` with your [desired version](https://github.com/RileyXX/TMDB-Trakt-Syncer/releases) (e.g. 1.0.1) and run in your operating system's native command line._
+_Replace `VERSION_NUMBER` with your [desired version](https://github.com/RileyXX/IMDB-Trakt-Syncer/releases) (e.g. 2.0.0) and run in your operating system's native command line._
+## Performing a Clean Uninstall:
+```
+TMDBTraktSyncer --clean-uninstall
+```
+_Clears all cached data, inluding user credentials and error logs before uninstalling. Run in your operating system's native command line._
+## Uninstall With Native Python Method:
+```
+python -m pip uninstall TMDBTraktSyncer
+```
+_Not recommended unless other uninstall methods failed. This method leaves behind any cached data such as user entered credentials and error logs which can be deleted manually from your install directory. Run in your operating system's native command line._
+
+# Commands for TMDBTraktSyncer
+
+Below is a list of available commands for this package, along with a brief description of their functionality. You can copy and paste them directly into your terminal.
+
+## Available Commands
+
+| **Command**               | **Description**                                                                                   |
+|---------------------------|---------------------------------------------------------------------------------------------------|
+| `--clear-user-data`       | Clears user-entered credentials.                                                                  |
+| `--clear-cache`           | Clears error logs and other cached data.                                                          |
+| `--uninstall`             | Clears cached data except user entered credentials before uninstalling.                           |
+| `--clean-uninstall`       | Clears all cached data, inluding user credentials before uninstalling.                            |
+| `--directory`             | Prints the package install directory.                                                             |
+
+## Usage Example
+
+Run the following commands as needed:
+
+```bash
+# To clear user data
+TMDBTraktSyncer --clear-user-data
+
+# To clear cache
+TMDBTraktSyncer --clear-cache
+
+# To uninstall
+TMDBTraktSyncer --uninstall
+
+# To perform a clean uninstall
+TMDBTraktSyncer --clean-uninstall
+
+# To get the installation directory
+TMDBTraktSyncer --directory
+
+# Use multiple commands at once
+TMDBTraktSyncer --clear-user-data --clear-cache
+```
 
 ## Alternative Manual Installation Method (without pip install):
 1. Install [Python](https://www.python.org/downloads/) (v3.6 or later). During installation, tick the box for adding Python to your PATH variable.
 2. Download the latest .zip from the [releases page](https://github.com/RileyXX/TMDB-Trakt-Syncer/releases) and extract it to the desired directory.
-3. Login to [Trakt](https://trakt.tv/oauth/applications) and create a new API application named `TMDBTraktSyncer`. In the "Redirect uri" field, enter `urn:ietf:wg:oauth:2.0:oob`, then save the application.
-4. Login to [TMDB](https://www.themoviedb.org/settings/api/) and create a new API application. Choose "Developer" and accept the terms. Fill out the application form as follows: 
+3. Open your operating systems native command line interface, use it to navigate to the extracted folder and run `python -m pip install requirements.txt`.
+4. Login to [Trakt](https://trakt.tv/oauth/applications) and create a new API application named `TMDBTraktSyncer`. In the "Redirect uri" field, enter `urn:ietf:wg:oauth:2.0:oob`, then save the application.
+5. Login to [TMDB](https://www.themoviedb.org/settings/api/) and create a new API application. Choose "Developer" and accept the terms. Fill out the application form as follows: 
    - Type of use: `Personal`
    - Application name: `TMDB-Trakt-Sync`
    - Application URL: `https://github.com/RileyXX/TMDB-Trakt-Syncer`
    - Application summary: `Use TMDB API and Trakt API to sync user watchlists and ratings between platforms.`
    - Fill in the rest of the fields as desired and submit the form. Your API keys will be generated instantly.
-5. Run `TMDBTraktSyncer.py` or open the terminal and navigate to the folder where `TMDBTraktSyncer.py` is located, then run `TMDBTraktSyncer.py` in the terminal.
-6. Follow the prompts during the first run. You will need to enter your Trakt `client ID` and `client secret` from step 3, as well as your `tmdb_v4_token` from step 4. Please note that these details are saved insecurely as `credentials.txt` in the same folder as the script.
-7. Setup is complete. The script will continue running and syncing your ratings. You can monitor its progress in the command line. See below for [setting up automation](https://github.com/RileyXX/TMDB-Trakt-Syncer#for-setting-up-automation-see-the-following-wiki-pages).
+6. Run `TMDBTraktSyncer.py` or open the terminal and navigate to the folder where `TMDBTraktSyncer.py` is located, then run `TMDBTraktSyncer.py` in the terminal.
+7. Follow the prompts during the first run. You will need to enter your Trakt `client ID` and `client secret` from step 3, as well as your `tmdb_v4_token` from step 4. Please note that these details are saved insecurely as `credentials.txt` in the same folder as the script.
+8. Setup is complete. The script will continue running and syncing your ratings. You can monitor its progress in the command line. See below for [setting up automation](https://github.com/RileyXX/TMDB-Trakt-Syncer#for-setting-up-automation-see-the-following-wiki-pages).
 
 ## For Setting Up Automation See the Following Wiki Pages:
 - Setup Automation for:
@@ -67,8 +115,7 @@ _Replace `VERSION_NUMBER` with your [desired version](https://github.com/RileyXX
 - Python Script to Update all Packages with Pip (Windows, Linux, Mac, ChromeOS, etc.) [Link #1](https://github.com/RileyXX/TMDB-Trakt-Syncer/wiki/Python-Script-to-Update-all-Packages-with-Pip-\(Windows,-Linux,-Mac,-ChromeOS,-etc\))
 
 ## Troubleshooting, Known Issues, Workarounds & Future Outlook:
-* If any of your details change (passwords, logins, API keys, etc.), simply open `credentials.txt`, modify your details, save it and then run the script again. Alternatively, delete `credentials.txt` to reset the script and it will prompt you to enter your new details on the next run.
-* Add support for review/comment sync [Issue #1](https://github.com/RileyXX/TMDB-Trakt-Syncer/issues/1)
+* If any of your details change (passwords, logins, API keys, etc.), simply run `TMDBTraktSyncer --clear-user-data` to reset your credentials. Alternatively, open `credentials.txt`, modify your details, save it and then run the script again. You can also simply delete `credentials.txt` to reset the script and it will prompt you to enter your new details on the next run.
 
 ## Screenshot:
 ![Demo](https://i.imgur.com/5LI04O2.png)
