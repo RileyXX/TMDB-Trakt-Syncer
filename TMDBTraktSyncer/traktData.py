@@ -2,12 +2,11 @@ import json
 import requests
 import urllib.parse
 import datetime
-try:
-    from TMDBTraktSyncer import errorHandling as EH
-    from TMDBTraktSyncer import errorLogger as EL
-except ImportError:
-    import errorHandling as EH
-    import errorLogger as EL
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from TMDBTraktSyncer import errorHandling as EH
+from TMDBTraktSyncer import errorLogger as EL
 
 def getTraktData():
     # Process Trakt Ratings and Comments

@@ -85,5 +85,3 @@ def checkVersion():
         print("Documentation: https://github.com/RileyXX/TMDB-Trakt-Syncer/releases")
     # else:
         # print(f"TMDBTraktSyncer is up to date (installed: {installed_version})")
-
-checkVersion()

@@ -10,7 +10,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 with codecs.open(os.path.join(here, "README.md"), 'r', encoding="utf-8") as fh:
     long_description = "\n" + fh.read()
 
-VERSION = '1.8.3'
+VERSION = '2.0.0'
 DESCRIPTION = 'A python script that syncs user watchlist and ratings for Movies, TV Shows and Episodes both ways between Trakt and TMDB.'
 
 # Setting up
@@ -23,7 +23,9 @@ setup(
     long_description=long_description,
     url="https://github.com/RileyXX/TMDB-Trakt-Syncer",
     packages=find_packages(),
-    install_requires=['requests'],
+    install_requires=[
+        'requests>=2.32.3'
+    ],
     keywords=['python', 'video', 'trakt', 'tmdb', 'ratings', 'sync', 'movies', 'tv shows'],
     classifiers=[
         "Development Status :: 5 - Production/Stable",

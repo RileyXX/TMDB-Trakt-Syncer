@@ -2,12 +2,11 @@ import traceback
 import requests
 from requests.exceptions import ConnectionError, RequestException, Timeout, TooManyRedirects, SSLError, ProxyError
 import time
-try:
-    from TMDBTraktSyncer import verifyCredentials as VC
-    from TMDBTraktSyncer import errorLogger as EL
-except ImportError:
-    import verifyCredentials as VC
-    import errorLogger as EL
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from TMDBTraktSyncer import verifyCredentials as VC
+from TMDBTraktSyncer import errorLogger as EL
 
 def report_error(error_message):
     github_issue_url = "https://github.com/RileyXX/TMDB-Trakt-Syncer/issues/new?template=bug_report.yml"
@@ -23,13 +22,16 @@ def report_error(error_message):
     print("-" * 50)
 
 def make_trakt_request(url, headers=None, params=None, payload=None, max_retries=5):
+    # Get credentials
+    trakt_client_id, _, trakt_access_token, _, _ = VC.prompt_get_credentials()
+    
     # Set default headers if none are provided
     if headers is None:
         headers = {
             'Content-Type': 'application/json',
             'trakt-api-version': '2',
-            'trakt-api-key': VC.trakt_client_id,
-            'Authorization': f'Bearer {VC.trakt_access_token}'
+            'trakt-api-key': trakt_client_id,
+            'Authorization': f'Bearer {trakt_access_token}'
         }
     
     retry_delay = 1  # Initial delay between retries (in seconds)
@@ -144,11 +146,14 @@ def make_tmdb_request(url, headers=None, payload=None, max_retries=5):
     :param max_retries: Maximum number of retry attempts in case of failure
     :return: The API response or None if all retries fail
     """
+    
+    # Get credentials
+    _, _, _, _, tmdb_access_token = VC.prompt_get_credentials()
 
     if headers is None:
         headers = {
             'Content-Type': 'application/json',
-            'Authorization': f'Bearer {VC.tmdb_access_token}'  # Assuming VC.tmdb_access_token is valid
+            'Authorization': f'Bearer {tmdb_access_token}'  # Assuming VC.tmdb_access_token is valid
         }
 
     retry_delay = 1  # Initial delay between retries in seconds
@@ -157,7 +162,7 @@ def make_tmdb_request(url, headers=None, payload=None, max_retries=5):
 
     while retry_attempts < max_retries:
         response = None
-        try:
+        try:        
             # Send GET or POST request based on payload
             if payload is None:
                 response = requests.get(url, headers=headers, timeout=connection_timeout)

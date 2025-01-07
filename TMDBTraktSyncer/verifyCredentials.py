@@ -1,17 +1,18 @@
 import os
 import json
-try:
-    from TMDBTraktSyncer import authTrakt
-    from TMDBTraktSyncer import errorLogger as EL
-except ImportError:
-    import authTrakt
-    import errorLogger as EL
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from TMDBTraktSyncer import authTrakt
+from TMDBTraktSyncer import errorLogger as EL
+
+def print_directory(main_directory):
+    print(f"Your settings are saved at:\n{main_directory}")
 
 def prompt_get_credentials():
     # Define the file path
     here = os.path.abspath(os.path.dirname(__file__))
     file_path = os.path.join(here, 'credentials.txt')
-    print(f"Your settings are saved at:\n{here}")
 
     default_values = {
         "trakt_client_id": "empty",
@@ -47,7 +48,33 @@ def prompt_get_credentials():
     # Check if any of the values are "empty" and prompt the user to enter them
     for key in values.keys():
         if values[key] == "empty" and (key != "trakt_access_token" and key != "trakt_refresh_token"):
-            values[key] = input(f"Please enter a value for {key}: ").strip()
+            if key == "trakt_client_id":
+                print("\n")
+                print("***** TRAKT API SETUP *****")
+                print("If this is your first time setting up, follow these instructions to setup your Trakt API application:")
+                print("  1. Login to Trakt and navigate to your API apps page: https://trakt.tv/oauth/applications")
+                print('  2. Create a new API application named "IMDBTraktSyncer".')
+                print('  3. In the "Redirect uri" field, enter "urn:ietf:wg:oauth:2.0:oob", then save the application.')
+                print("\n")
+                values[key] = input("Please enter your Trakt Client ID: ").strip()
+            elif key == "tmdb_access_token":
+                print("\n")
+                print("***** TMDB API SETUP *****")
+                print("If this is your first time setting up, follow these instructions to setup your TMDB API application:")
+                print("  1. Login to TMDB and navigate to your API apps page: https://www.themoviedb.org/settings/api/")
+                print('  2. Create a new API application. Choose "Developer" and accept the terms.')
+                print("  3. Fill out the application form as follows:")
+                print('     - Type of use: Personal')
+                print('     - Application name: TMDB-Trakt-Sync')
+                print('     - Application URL: https://github.com/RileyXX/TMDB-Trakt-Syncer')
+                print('     - Application summary: Use TMDB API and Trakt API to sync user watchlists and ratings between platforms.')
+                print('     - Fill in the rest of the fields as desired and submit the form. Your API keys will be generated instantly.')
+                print("\n")
+                values[key] = input("Please enter your TMDB Access Token: ").strip()
+            else:
+                values[key] = input(f"Please enter a value for {key}: ").strip()
+            
+            # Save the updated values to the file
             with open(file_path, 'w', encoding='utf-8') as f:
                 json.dump(values, f)
 
@@ -232,9 +259,3 @@ def prompt_remove_watched_from_watchlists():
 
     # return true or false
     return remove_watched_from_watchlists_value
-
-# Save the credential values as variables
-trakt_client_id, trakt_client_secret, trakt_access_token, trakt_refresh_token, tmdb_access_token = prompt_get_credentials()
-sync_ratings_value = prompt_sync_ratings()
-sync_watchlist_value = prompt_sync_watchlist()
-remove_watched_from_watchlists_value = prompt_remove_watched_from_watchlists()
