@@ -37,12 +37,12 @@ _Run in your operating system's native command line._
 ```
 TMDBTraktSyncer --uninstall
 ```
-_Clears cached browsers, drivers and error logs before uninstalling. Run in your operating system's native command line._
+_Clears error logs before uninstalling. Run in your operating system's native command line._
 ## Installing a Specific Version:
 ```
 python -m pip install TMDBTraktSyncer==VERSION_NUMBER
 ```
-_Replace `VERSION_NUMBER` with your [desired version](https://github.com/RileyXX/IMDB-Trakt-Syncer/releases) (e.g. 2.0.0) and run in your operating system's native command line._
+_Replace `VERSION_NUMBER` with your [desired version](https://github.com/RileyXX/TMDB-Trakt-Syncer/releases) (e.g. 2.0.0) and run in your operating system's native command line._
 ## Performing a Clean Uninstall:
 ```
 TMDBTraktSyncer --clean-uninstall
