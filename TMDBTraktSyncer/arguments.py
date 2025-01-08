@@ -150,7 +150,7 @@ def uninstall(main_directory):
                 
     # Uninstall the package
     print("Uninstalling the package...")
-    subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", "IMDBTraktSyncer"], check=True)
+    subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", "TMDBTraktSyncer"], check=True)
 
     print("Uninstall complete.")
 
@@ -190,7 +190,7 @@ def clean_uninstall(main_directory):
                 
     # Uninstall the package
     print("Uninstalling the package...")
-    subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", "IMDBTraktSyncer"], check=True)
+    subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", "TMDBTraktSyncer"], check=True)
 
     print("Clean uninstall complete.")
 
