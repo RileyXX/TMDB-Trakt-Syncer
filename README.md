@@ -73,6 +73,9 @@ Below is a list of available commands for this package, along with a brief descr
 Run the following commands as needed:
 
 ```bash
+# List available commands
+TMDBTraktSyncer --help
+
 # To clear user data
 TMDBTraktSyncer --clear-user-data
 
