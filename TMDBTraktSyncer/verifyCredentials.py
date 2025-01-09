@@ -1,6 +1,8 @@
 import os
 import json
 import sys
+import datetime
+from datetime import timedelta
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from TMDBTraktSyncer import authTrakt
@@ -14,21 +16,23 @@ def prompt_get_credentials():
     here = os.path.abspath(os.path.dirname(__file__))
     file_path = os.path.join(here, 'credentials.txt')
 
+    # Default values to use if no credentials are provided
     default_values = {
         "trakt_client_id": "empty",
         "trakt_client_secret": "empty",
         "trakt_access_token": "empty",
         "trakt_refresh_token": "empty",
         "tmdb_access_token": "empty",
+        "last_trakt_token_refresh": "empty"
     }
 
-    # Check if the file exists
+    # Check if the file exists and is not empty
     if not os.path.isfile(file_path) or os.path.getsize(file_path) == 0:
         # If the file does not exist or is empty, create it with default values
         with open(file_path, 'w', encoding='utf-8') as f:
             json.dump(default_values, f)
-
-    # Load the values from the file or initialize with default values
+    
+    # Read the file only once and parse JSON
     with open(file_path, 'r', encoding='utf-8') as f:
         try:
             values = json.load(f)
@@ -36,18 +40,16 @@ def prompt_get_credentials():
             # Handle the case where the file is empty or not a valid JSON
             values = default_values
 
-    # Old version fallback method - Check if the old key name exists and rename it to the new name
+    # Check for deprecated key and rename it if needed
     if "tmdb_v4_token" in values:
         values["tmdb_access_token"] = values.pop("tmdb_v4_token")
 
-    # Check if any default values are missing and add them if necessary
-    for key, default_value in default_values.items():
-        if key not in values:
-            values[key] = default_value
+    # Add missing default values
+    values = {**default_values, **values}
 
-    # Check if any of the values are "empty" and prompt the user to enter them
-    for key in values.keys():
-        if values[key] == "empty" and (key != "trakt_access_token" and key != "trakt_refresh_token"):
+    # Prompt the user only for missing or empty values (except for tokens that can be refreshed)
+    for key, value in values.items():
+        if value == "empty" and key not in ["trakt_access_token", "trakt_refresh_token", "last_trakt_token_refresh"]:
             if key == "trakt_client_id":
                 print("\n")
                 print("***** TRAKT API SETUP *****")
@@ -73,37 +75,43 @@ def prompt_get_credentials():
                 values[key] = input("Please enter your TMDB Access Token: ").strip()
             else:
                 values[key] = input(f"Please enter a value for {key}: ").strip()
-            
-            # Save the updated values to the file
-            with open(file_path, 'w', encoding='utf-8') as f:
-                json.dump(values, f)
 
-    # Get the trakt_refresh_token value if it exists, or run the authTrakt.py function to get it
-    trakt_access_token = None
-    trakt_refresh_token = None
-    client_id = values["trakt_client_id"]
-    client_secret = values["trakt_client_secret"]
-    if "trakt_refresh_token" in values and values["trakt_refresh_token"] != "empty":
-        trakt_access_token = values["trakt_refresh_token"]
-        trakt_access_token, trakt_refresh_token = authTrakt.authenticate(client_id, client_secret, trakt_access_token)
+    # Update the file only if any values were changed
+    with open(file_path, 'w', encoding='utf-8') as f:
+        json.dump(values, f)
+
+    # Check if it's time to refresh the Trakt tokens (7 days interval)
+    last_trakt_token_refresh = values.get("last_trakt_token_refresh", "empty")
+    should_refresh = True
+    if last_trakt_token_refresh != "empty":
+        try:
+            last_trakt_token_refresh_time = datetime.datetime.fromisoformat(last_trakt_token_refresh)
+            if datetime.datetime.now() - last_trakt_token_refresh_time < timedelta(days=7):
+                should_refresh = False
+        except ValueError:
+            pass
+
+    # Refresh tokens if necessary
+    if should_refresh:
+        trakt_access_token = values.get("trakt_refresh_token", "empty")
+        client_id = values["trakt_client_id"]
+        client_secret = values["trakt_client_secret"]
+        
+        if trakt_access_token != "empty":
+            trakt_access_token, trakt_refresh_token = authTrakt.authenticate(client_id, client_secret, trakt_access_token)
+        else:
+            trakt_access_token, trakt_refresh_token = authTrakt.authenticate(client_id, client_secret)
+
+        # Update the values and last refresh timestamp
         values["trakt_access_token"] = trakt_access_token
         values["trakt_refresh_token"] = trakt_refresh_token
-        with open(file_path, 'w', encoding='utf-8') as f:
-            json.dump(values, f)
-    else:
-        trakt_access_token, trakt_refresh_token = authTrakt.authenticate(client_id, client_secret)
-        values["trakt_access_token"] = trakt_access_token
-        values["trakt_refresh_token"] = trakt_refresh_token
+        values["last_trakt_token_refresh"] = datetime.datetime.now().isoformat()
+
         with open(file_path, 'w', encoding='utf-8') as f:
             json.dump(values, f)
 
-    trakt_client_id = values["trakt_client_id"]
-    trakt_client_secret = values["trakt_client_secret"]
-    trakt_access_token = values["trakt_access_token"]
-    trakt_refresh_token = values["trakt_refresh_token"]
-    tmdb_access_token = values["tmdb_access_token"]
-
-    return trakt_client_id, trakt_client_secret, trakt_access_token, trakt_refresh_token, tmdb_access_token
+    # Return the required credentials
+    return values["trakt_client_id"], values["trakt_client_secret"], values["trakt_access_token"], values["trakt_refresh_token"], values["tmdb_access_token"]
         
 def prompt_sync_ratings():
     # Define the file path
