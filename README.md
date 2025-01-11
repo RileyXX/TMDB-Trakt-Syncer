@@ -62,6 +62,7 @@ Below is a list of available commands for this package, along with a brief descr
 
 | **Command**               | **Description**                                                                                   |
 |---------------------------|---------------------------------------------------------------------------------------------------|
+| `--help`                  | List available commands                                                                               |
 | `--clear-user-data`       | Clears user-entered credentials.                                                                  |
 | `--clear-cache`           | Clears error logs and other cached data.                                                          |
 | `--uninstall`             | Clears cached data except user entered credentials before uninstalling.                           |
