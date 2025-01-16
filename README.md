@@ -37,7 +37,7 @@ _Run in your operating system's native command line._
 ```
 TMDBTraktSyncer --uninstall
 ```
-_Clears error logs before uninstalling. Run in your operating system's native command line._
+_Clears cached data except user entered credentials before uninstalling. Run in your operating system's native command line._
 ## Installing a Specific Version:
 ```
 python -m pip install TMDBTraktSyncer==VERSION_NUMBER
