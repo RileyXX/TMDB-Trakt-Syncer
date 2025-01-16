@@ -30,7 +30,7 @@ def prompt_get_credentials():
     if not os.path.isfile(file_path) or os.path.getsize(file_path) == 0:
         # If the file does not exist or is empty, create it with default values
         with open(file_path, 'w', encoding='utf-8') as f:
-            json.dump(default_values, f)
+            json.dump(default_values, f, indent=4, separators=(', ', ': '))
     
     # Read the file only once and parse JSON
     with open(file_path, 'r', encoding='utf-8') as f:
@@ -78,7 +78,7 @@ def prompt_get_credentials():
 
     # Update the file only if any values were changed
     with open(file_path, 'w', encoding='utf-8') as f:
-        json.dump(values, f)
+        json.dump(values, f, indent=4, separators=(', ', ': '))
 
     # Check if it's time to refresh the Trakt tokens (7 days interval)
     last_trakt_token_refresh = values.get("last_trakt_token_refresh", "empty")
@@ -108,162 +108,137 @@ def prompt_get_credentials():
         values["last_trakt_token_refresh"] = datetime.datetime.now().isoformat()
 
         with open(file_path, 'w', encoding='utf-8') as f:
-            json.dump(values, f)
+            json.dump(values, f, indent=4, separators=(', ', ': '))
 
     # Return the required credentials
     return values["trakt_client_id"], values["trakt_client_secret"], values["trakt_access_token"], values["trakt_refresh_token"], values["tmdb_access_token"]
         
 def prompt_sync_ratings():
-    # Define the file path
-    here = os.path.abspath(os.path.dirname(__file__))
-    file_path = os.path.join(here, 'credentials.txt')
+    """
+    Check or prompt the user to determine if ratings should be synced.
 
-    # Check if credentials file exists
+    Returns:
+        bool: True if syncing ratings, False otherwise.
+    """
+    # Define the file path
+    file_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'credentials.txt')
+
+    # Attempt to read the existing value from the credentials file
     try:
         with open(file_path, 'r', encoding='utf-8') as file:
             credentials = json.load(file)
             sync_ratings_value = credentials.get('sync_ratings')
-            if sync_ratings_value is not None:
+            if isinstance(sync_ratings_value, bool):
                 return sync_ratings_value
     except FileNotFoundError:
-        error_message = "File not found error"
-        EL.logger.error(error_message, exc_info=True)
-        pass
+        EL.logger.error("Credentials file not found.", exc_info=True)
+        credentials = {}
+    except json.JSONDecodeError:
+        EL.logger.error("Error decoding credentials file.", exc_info=True)
+        credentials = {}
 
+    # Prompt the user for input if value is not found or invalid
     while True:
-        # Prompt the user for input
-        print("Do you want to sync ratings? (y/n)")
-        user_input = input("Enter your choice: ")
-
-        # Validate user input
-        if user_input.lower() == 'y':
-            sync_ratings_value = True
+        user_input = input("Do you want to sync ratings? (y/n): ").strip().lower()
+        if user_input in ('y', 'n'):
+            sync_ratings_value = user_input == 'y'
             break
-        elif user_input.lower() == 'n':
-            sync_ratings_value = False
-            break
-        else:
-            # Invalid input, ask again
-            print("Invalid input. Please enter 'y' or 'n'.")
+        print("Invalid input. Please enter 'y' or 'n'.")
 
-    # Update the value in the JSON file
-    credentials = {}
-    try:
-        with open(file_path, 'r', encoding='utf-8') as file:
-            credentials = json.load(file)
-    except FileNotFoundError:
-        error_message = "File not found error"
-        EL.logger.error(error_message, exc_info=True)
-        pass
-
+    # Save the updated value to the credentials file
     credentials['sync_ratings'] = sync_ratings_value
+    try:
+        with open(file_path, 'w', encoding='utf-8') as file:
+            json.dump(credentials, file, indent=4, separators=(', ', ': '))
+    except Exception as e:
+        EL.logger.error("Error writing to credentials file: %s", e, exc_info=True)
 
-    with open(file_path, 'w', encoding='utf-8') as file:
-        json.dump(credentials, file)
-
-    # return true or false
     return sync_ratings_value
 
 def prompt_sync_watchlist():
+    """
+    Prompts the user to enable or disable watchlist syncing and stores the preference in a credentials file.
+    Minimizes file reads and writes while handling errors gracefully.
+
+    Returns:
+        bool: The user's preference for syncing the watchlist.
+    """
     # Define the file path
     here = os.path.abspath(os.path.dirname(__file__))
     file_path = os.path.join(here, 'credentials.txt')
 
-    # Check if credentials file exists
+    # Attempt to read the existing sync_watchlist value from the file
     try:
         with open(file_path, 'r', encoding='utf-8') as file:
             credentials = json.load(file)
             sync_watchlist_value = credentials.get('sync_watchlist')
-            if sync_watchlist_value is not None:
+            if sync_watchlist_value not in [None, "empty"]:
                 return sync_watchlist_value
     except FileNotFoundError:
-        error_message = "File not found error"
-        EL.logger.error(error_message, exc_info=True)
-        pass
+        EL.error("Credentials file not found. Proceeding to prompt user.", exc_info=True)
+        credentials = {}
+    except json.JSONDecodeError:
+        EL.error("Invalid JSON format in credentials file. Proceeding to prompt user.", exc_info=True)
+        credentials = {}
 
+    # Prompt the user for input
     while True:
-        # Prompt the user for input
-        print("Do you want to sync watchlists? (y/n)")
-        user_input = input("Enter your choice: ")
-
-        # Validate user input
-        if user_input.lower() == 'y':
-            sync_watchlist_value = True
-            break
-        elif user_input.lower() == 'n':
-            sync_watchlist_value = False
+        user_input = input("Do you want to sync watchlists? (y/n): ").strip().lower()
+        if user_input in {'y', 'n'}:
+            sync_watchlist_value = (user_input == 'y')
             break
         else:
-            # Invalid input, ask again
             print("Invalid input. Please enter 'y' or 'n'.")
 
-    # Update the value in the JSON file
-    credentials = {}
-    try:
-        with open(file_path, 'r', encoding='utf-8') as file:
-            credentials = json.load(file)
-    except FileNotFoundError:
-        error_message = "File not found error"
-        EL.logger.error(error_message, exc_info=True)
-        pass
-
+    # Update the file with the new sync_watchlist value
     credentials['sync_watchlist'] = sync_watchlist_value
+    try:
+        with open(file_path, 'w', encoding='utf-8') as file:
+            json.dump(credentials, file, indent=4, separators=(', ', ': '))
+    except Exception as e:
+        EL.error("Failed to write to credentials file.", exc_info=True)
 
-    with open(file_path, 'w', encoding='utf-8') as file:
-        json.dump(credentials, file)
-
-    # return true or false
     return sync_watchlist_value
 
 def prompt_remove_watched_from_watchlists():
+    """
+    Function to check or prompt the user for their preference on removing watched items 
+    from watchlists. Minimizes file read/write operations and ensures clarity.
+    """
     # Define the file path
     here = os.path.abspath(os.path.dirname(__file__))
     file_path = os.path.join(here, 'credentials.txt')
 
-    # Check if credentials file exists
-    try:
-        with open(file_path, 'r', encoding='utf-8') as file:
-            credentials = json.load(file)
-            remove_watched_from_watchlists_value = credentials.get('remove_watched_from_watchlists')
-            if remove_watched_from_watchlists_value is not None:
-                return remove_watched_from_watchlists_value
-    except FileNotFoundError:
-        error_message = "File not found error"
-        EL.logger.error(error_message, exc_info=True)
-        pass
-
-    while True:
-        # Prompt the user for input
-        print("Movies and Episodes are removed from watchlists after 1 play.")
-        print("Shows are removed when atleast 80% of the episodes are watched AND the series is marked as ended or cancelled.")
-        print("Do you want to remove watched items from watchlists? (y/n)")
-        user_input = input("Enter your choice: ")
-
-        # Validate user input
-        if user_input.lower() == 'y':
-            remove_watched_from_watchlists_value = True
-            break
-        elif user_input.lower() == 'n':
-            remove_watched_from_watchlists_value = False
-            break
-        else:
-            # Invalid input, ask again
-            print("Invalid input. Please enter 'y' or 'n'.")
-
-    # Update the value in the JSON file
+    # Load credentials from file (if it exists)
     credentials = {}
     try:
         with open(file_path, 'r', encoding='utf-8') as file:
             credentials = json.load(file)
     except FileNotFoundError:
-        error_message = "File not found error"
-        EL.logger.error(error_message, exc_info=True)
-        pass
+        EL.logger.error("Credentials file not found.", exc_info=True)
 
+    # Check existing preference in credentials
+    remove_watched_from_watchlists_value = credentials.get('remove_watched_from_watchlists')
+    if remove_watched_from_watchlists_value is not None and remove_watched_from_watchlists_value != "empty":
+        return remove_watched_from_watchlists_value
+
+    # Prompt the user for input if preference is not set
+    print("Movies and Episodes are removed from watchlists after 1 play.")
+    print("Shows are removed when at least 80% of the episodes are watched AND the series is marked as ended or cancelled.")
+    while True:
+        user_input = input("Do you want to remove watched items from watchlists? (y/n): ").strip().lower()
+        if user_input in ['y', 'n']:
+            remove_watched_from_watchlists_value = (user_input == 'y')  # Convert to boolean
+            break
+        else:
+            print("Invalid input. Please enter 'y' or 'n'.")
+
+    # Update credentials and write back to file
     credentials['remove_watched_from_watchlists'] = remove_watched_from_watchlists_value
+    try:
+        with open(file_path, 'w', encoding='utf-8') as file:
+            json.dump(credentials, file, indent=4, separators=(', ', ': '))
+    except IOError as e:
+        EL.logger.error("Failed to write to credentials file.", exc_info=True)
 
-    with open(file_path, 'w', encoding='utf-8') as file:
-        json.dump(credentials, file)
-
-    # return true or false
     return remove_watched_from_watchlists_value

@@ -127,7 +127,7 @@ def uninstall(main_directory):
             file_path = os.path.join(root, file)
             
             # Skip deleting credentials.txt
-            if file == "credentials.txt":
+            if file in ["credentials.txt", "log.txt"]:
                 print(f"Skipping {file_path} (credentials.txt)")
                 continue  # Skip this file
             
