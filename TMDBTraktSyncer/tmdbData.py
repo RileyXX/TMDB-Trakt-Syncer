@@ -107,7 +107,7 @@ def getTMDBRatings():
                 'Type': 'episode'
             })
             
-            page += 1
+        page += 1
 
     tmdb_ratings = movie_ratings + show_ratings + episode_ratings
 
