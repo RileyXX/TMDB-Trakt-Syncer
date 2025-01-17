@@ -37,7 +37,7 @@ _Run in your operating system's native command line._
 ```
 TMDBTraktSyncer --uninstall
 ```
-_Clears cached data except user entered credentials and error logs before uninstalling. Run in your operating system's native command line._
+_Clears cached data except user entered credentials before uninstalling. Run in your operating system's native command line._
 ## Installing a Specific Version:
 ```
 python -m pip install TMDBTraktSyncer==VERSION_NUMBER
@@ -62,10 +62,10 @@ Below is a list of available commands for this package, along with a brief descr
 
 | **Command**               | **Description**                                                                                   |
 |---------------------------|---------------------------------------------------------------------------------------------------|
-| `--help`                  | List available commands                                                                           |
+| `--help`                  | List available commands                                                                               |
 | `--clear-user-data`       | Clears user-entered credentials.                                                                  |
 | `--clear-cache`           | Clears error logs and other cached data.                                                          |
-| `--uninstall`             | Clears cached data except user entered credentials and error logs before uninstalling.            |
+| `--uninstall`             | Clears cached data except user entered credentials before uninstalling.                           |
 | `--clean-uninstall`       | Clears all cached data, inluding user credentials before uninstalling.                            |
 | `--directory`             | Prints the package install directory.                                                             |
 

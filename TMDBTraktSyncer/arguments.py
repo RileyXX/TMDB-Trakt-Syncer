@@ -16,32 +16,53 @@ def try_remove(file_path, retries=3, delay=1):
     """
     for attempt in range(retries):
         try:
-            # Check if the path is a directory
             if os.path.isdir(file_path):
                 # Ensure the directory and its contents are writable
                 for root, dirs, files in os.walk(file_path, topdown=False):
                     for name in files:
                         file = os.path.join(root, name)
-                        os.chmod(file, 0o777)  # Make file writable
+                        if sys.platform != 'win32':  # chmod on Linux/macOS
+                            os.chmod(file, 0o777)  # Make file writable
                         os.remove(file)
                     for name in dirs:
                         folder = os.path.join(root, name)
-                        os.chmod(folder, 0o777)  # Make folder writable
+                        if sys.platform != 'win32':  # chmod on Linux/macOS
+                            os.chmod(folder, 0o777)  # Make folder writable
                         os.rmdir(folder)
-                os.chmod(file_path, 0o777)  # Make the top-level folder writable
+
+                if sys.platform != 'win32':  # chmod on Linux/macOS
+                    os.chmod(file_path, 0o777)  # Make the top-level folder writable
                 os.rmdir(file_path)  # Finally, remove the directory
             else:
                 # It's a file, ensure it's writable and remove it
-                os.chmod(file_path, 0o777)  # Make it writable
+                if sys.platform != 'win32':  # chmod on Linux/macOS
+                    os.chmod(file_path, 0o777)  # Make it writable
                 os.remove(file_path)
+
             print(f"Successfully removed: {file_path}")
             return True
         except PermissionError:
             print(f"Permission error for {file_path}, retrying...")
         except Exception as e:
             print(f"Error removing {file_path}: {e}")
-        
+
         time.sleep(delay)
+
+    # If running on Windows, handle read-only files
+    if sys.platform == 'win32':
+        try:
+            # Remove read-only attribute on Windows
+            if os.path.exists(file_path):
+                os.chmod(file_path, stat.S_IWRITE)  # Remove read-only attribute
+                if os.path.isdir(file_path):
+                    shutil.rmtree(file_path)  # Remove non-empty directory
+                else:
+                    os.remove(file_path)
+            print(f"Successfully removed (after read-only fix): {file_path}")
+            return True
+        except Exception as e:
+            print(f"Error removing {file_path} on Windows: {e}")
+
     return False
 
 def clear_user_data(main_directory):
