@@ -6,30 +6,7 @@ import sys
 def get_installed_version():
     """
     Retrieve the installed version of the 'tmdbtraktsyncer' package.
-    First, attempts to use 'pip' directly.
-    If that fails, it falls back to calling 'sys.executable -m pip'.
     """
-    # Try calling 'pip' directly
-    try:
-        result = subprocess.run(
-            ['pip', 'show', 'TMDBTraktSyncer'],
-            capture_output=True,
-            text=True,
-            check=True
-        )
-        for line in result.stdout.splitlines():
-            if line.startswith("Version:"):
-                return line.split()[1]
-    except subprocess.CalledProcessError as e:
-        print(f"Error: Could not retrieve version using 'pip' command directly: {e}")
-    except FileNotFoundError:
-        print("Error: 'pip' is not installed or not in PATH.")
-    except Exception as e:
-        print(f"Unexpected error during fallback to 'pip': {e}")
-    
-    print("Fallback: Try using 'sys.executable -m pip'")
-    
-    # Fallback: Attempt using 'sys.executable -m pip'
     try:
         result = subprocess.run(
             [sys.executable, '-m', 'pip', 'show', 'TMDBTraktSyncer'],
@@ -42,7 +19,7 @@ def get_installed_version():
                 print(line.split()[1])
                 return line.split()[1]
     except subprocess.CalledProcessError as e:
-        print(f"Error: Could not retrieve python version using '{sys.executable} -m pip': {e}")
+        print(f"Error: Could not retrieve TMDBTraktSyncer version using '{sys.executable} -m pip': {e}")
     except FileNotFoundError:
         print(f"Error: Python executable '{sys.executable}' does not have pip installed.")
 
