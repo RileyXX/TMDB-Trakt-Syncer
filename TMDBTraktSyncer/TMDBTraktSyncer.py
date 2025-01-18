@@ -10,7 +10,7 @@ from TMDBTraktSyncer import arguments
 
 def main():
 
-    parser = argparse.ArgumentParser(description="IMDBTraktSyncer CLI")
+    parser = argparse.ArgumentParser(description="TMDBTraktSyncer CLI")
     parser.add_argument("--clear-user-data", action="store_true", help="Clears user entered credentials.")
     parser.add_argument("--clear-cache", action="store_true", help="Clears error logs and other cached data.")
     parser.add_argument("--uninstall", action="store_true", help="Clears cached data except user entered credentials before uninstalling.")
@@ -63,6 +63,10 @@ def main():
 
             trakt_watchlist, trakt_ratings, watched_content = traktData.getTraktData()
             tmdb_watchlist, tmdb_ratings = tmdbData.getTMDBRatings()
+            
+            # Filter out items that share the same Title, Year and Type, AND have non-matching IMDB_IDs
+            trakt_ratings, tmdb_ratings = EH.filter_mismatched_items(trakt_ratings, tmdb_ratings)
+            trakt_watchlist, tmdb_watchlist = EH.filter_mismatched_items(trakt_watchlist, tmdb_watchlist)
 
             #Get trakt and tmdb ratings and filter out trakt ratings with missing tmdb id
             trakt_ratings = [rating for rating in trakt_ratings if rating['TMDB_ID'] is not None]

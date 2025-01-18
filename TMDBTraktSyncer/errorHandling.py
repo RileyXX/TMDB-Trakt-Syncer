@@ -297,3 +297,38 @@ def get_tmdb_message(status_code):
 
     # Default to 'Unknown error' if status code is not found in the dictionary
     return error_messages.get(status_code, "Unknown error")
+    
+# Function to filter out items that share the same Title, Year, and Type
+# AND have non-matching TMDB_ID values
+def filter_mismatched_items(trakt_list, tmdb_list):
+    # Define the keys to be used for comparison
+    comparison_keys = ['Title', 'Year', 'Type', 'TMDB_ID']
+
+    # Group items by (Title, Year, Type)
+    trakt_grouped = {}
+    for item in trakt_list:
+        if all(key in item for key in comparison_keys):
+            key = (item['Title'], item['Year'], item['Type'])
+            trakt_grouped.setdefault(key, set()).add(item['TMDB_ID'])
+
+    tmdb_grouped = {}
+    for item in tmdb_list:
+        if all(key in item for key in comparison_keys):
+            key = (item['Title'], item['Year'], item['Type'])
+            tmdb_grouped.setdefault(key, set()).add(item['TMDB_ID'])
+
+    # Find conflicting items (same Title, Year, Type but different TMDB_IDs)
+    conflicting_items = {
+        key for key in trakt_grouped.keys() & tmdb_grouped.keys()  # Only consider shared keys
+        if trakt_grouped[key] != tmdb_grouped[key]  # Check if TMDB_IDs differ
+    }
+    
+    # Filter out conflicting items from both lists
+    filtered_trakt_list = [
+        item for item in trakt_list if (item['Title'], item['Year'], item['Type']) not in conflicting_items
+    ]
+    filtered_tmdb_list = [
+        item for item in tmdb_list if (item['Title'], item['Year'], item['Type']) not in conflicting_items
+    ]
+
+    return filtered_trakt_list, filtered_tmdb_list
