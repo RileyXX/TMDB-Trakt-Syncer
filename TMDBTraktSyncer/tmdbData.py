@@ -14,15 +14,15 @@ def fetch_data(url):
     total_pages = json_data['total_pages']
     current_page = json_data['page']
     return results, total_pages, current_page
-
-def getTMDBRatings():
-    print('Processing TMDB Data')
-
+    
+def fetch_account_id():
     # Fetch Account ID
     response = EH.make_tmdb_request('https://api.themoviedb.org/3/account')
     json_data = json.loads(response.text)
     account_id = json_data['id']
-    
+    return account_id
+
+def get_tmdb_watchlist(account_id):
     # Fetch Movies Watchlist
     movie_watchlist = []
     page = 1
@@ -52,7 +52,10 @@ def getTMDBRatings():
         page += 1
 
     tmdb_watchlist = movie_watchlist + show_watchlist
-
+    
+    return tmdb_watchlist
+    
+def get_tmdb_ratings(account_id):
     # Fetch Movie Ratings
     movie_ratings = []
     page = 1
@@ -111,6 +114,4 @@ def getTMDBRatings():
 
     tmdb_ratings = movie_ratings + show_ratings + episode_ratings
 
-    print('Processing TMDB Data Complete')
-
-    return tmdb_watchlist, tmdb_ratings
+    return tmdb_ratings

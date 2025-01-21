@@ -16,7 +16,6 @@ def get_installed_version():
         )
         for line in result.stdout.splitlines():
             if line.startswith("Version:"):
-                print(line.split()[1])
                 return line.split()[1]
     except subprocess.CalledProcessError as e:
         print(f"Error: Could not retrieve TMDBTraktSyncer version using '{sys.executable} -m pip': {e}")

@@ -60,11 +60,29 @@ def main():
             sync_ratings_value = VC.prompt_sync_ratings()
             sync_watchlist_value = VC.prompt_sync_watchlist()
             remove_watched_from_watchlists_value = VC.prompt_remove_watched_from_watchlists()
-
-            trakt_watchlist, trakt_ratings, watched_content = traktData.getTraktData()
-            tmdb_watchlist, tmdb_ratings = tmdbData.getTMDBRatings()
             
-            # Filter out items that share the same Title, Year and Type, AND have non-matching IMDB_IDs
+            # Initalize list values
+            trakt_watchlist = trakt_ratings = watched_content = tmdb_watchlist = tmdb_ratings = []
+            
+            print('Processing Trakt Data')
+            trakt_encoded_username = traktData.get_trakt_encoded_username()
+            if sync_watchlist_value or remove_watched_from_watchlists_value:
+                trakt_watchlist = traktData.get_trakt_watchlist(trakt_encoded_username)
+            if sync_ratings_value:
+                trakt_ratings = traktData.get_trakt_ratings(trakt_encoded_username)
+            if remove_watched_from_watchlists_value:
+                watched_content = traktData.get_trakt_watch_history(trakt_encoded_username)
+            print('Processing Trakt Data Complete')
+            
+            print('Processing TMDB Data')
+            tmdb_account_id = tmdbData.fetch_account_id()
+            if sync_watchlist_value or remove_watched_from_watchlists_value:
+                tmdb_watchlist = tmdbData.get_tmdb_watchlist(tmdb_account_id)
+            if sync_ratings_value:
+                tmdb_ratings = tmdbData.get_tmdb_ratings(tmdb_account_id)
+            print('Processing TMDB Data Complete')
+            
+            # Filter out items that share the same Title, Year and Type, AND have non-matching TMDB_IDs
             trakt_ratings, tmdb_ratings = EH.filter_mismatched_items(trakt_ratings, tmdb_ratings)
             trakt_watchlist, tmdb_watchlist = EH.filter_mismatched_items(trakt_watchlist, tmdb_watchlist)
 
