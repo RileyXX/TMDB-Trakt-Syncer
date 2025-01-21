@@ -98,7 +98,7 @@ def get_trakt_watch_history(encoded_username):
                 tmdb_movie_id = movie.get('ids', {}).get('tmdb')
                 trakt_movie_id = movie.get('ids', {}).get('trakt')
                 if trakt_movie_id and trakt_movie_id not in seen_ids:
-                    watched_movies.append({'Title': movie.get('title'), 'Year': movie.get('year'), 'TMDB_ID': tmdb_movie_id, 'TraktID': trakt_movie_id, 'WatchedAt': movie.get('watched_at'), 'Type': 'movie'})
+                    watched_movies.append({'Title': movie.get('title'), 'Year': movie.get('year'), 'TMDB_ID': tmdb_movie_id, 'TraktID': trakt_movie_id, 'WatchedAt': item.get('watched_at'), 'Type': 'movie'})
                     seen_ids.add(trakt_movie_id)
             elif item['type'] == 'episode':
                 show = item.get('show')
@@ -108,7 +108,7 @@ def get_trakt_watch_history(encoded_username):
                 aired_episodes = show.get('aired_episodes')
                 
                 if trakt_show_id and trakt_show_id not in seen_ids:
-                    watched_shows.append({'Title': show.get('title'), 'Year': show.get('year'), 'TMDB_ID': tmdb_show_id, 'TraktID': trakt_show_id, 'ShowStatus': show_status, 'AiredEpisodes': aired_episodes, 'Type': 'show'})
+                    watched_shows.append({'Title': show.get('title'), 'Year': show.get('year'), 'TMDB_ID': tmdb_show_id, 'TraktID': trakt_show_id, 'ShowStatus': show_status, 'AiredEpisodes': aired_episodes, 'WatchedAt': item.get('watched_at'), 'Type': 'show'})
                     seen_ids.add(trakt_show_id)
 
                 show_title = show.get('title')
@@ -119,7 +119,7 @@ def get_trakt_watch_history(encoded_username):
                 trakt_episode_id = episode.get('ids', {}).get('trakt')
                 episode_title = f'{show_title}: {episode.get("title")}'
                 episode_year = datetime.datetime.strptime(episode.get('first_aired'), "%Y-%m-%dT%H:%M:%S.%fZ").year if episode.get('first_aired') else None
-                watched_at = episode.get('watched_at')
+                watched_at = item.get('watched_at')
                 if trakt_episode_id and trakt_episode_id not in seen_ids:
                     watched_episodes.append({'Title': episode_title, 'Year': episode_year, 'TMDB_ID': tmdb_episode_id, 'TraktID': trakt_episode_id, 'TraktShowID': trakt_show_id, 'SeasonNumber': season_number, 'EpisodeNumber': episode_number, 'WatchedAt': watched_at, 'Type': 'episode'})
                     seen_ids.add(trakt_episode_id)
