@@ -55,7 +55,7 @@ def prompt_get_credentials():
                 print("***** TRAKT API SETUP *****")
                 print("If this is your first time setting up, follow these instructions to setup your Trakt API application:")
                 print("  1. Login to Trakt and navigate to your API apps page: https://trakt.tv/oauth/applications")
-                print('  2. Create a new API application named "IMDBTraktSyncer".')
+                print('  2. Create a new API application named "TMDBTraktSyncer".')
                 print('  3. In the "Redirect uri" field, enter "urn:ietf:wg:oauth:2.0:oob", then save the application.')
                 print("\n")
                 values[key] = input("Please enter your Trakt Client ID: ").strip()
