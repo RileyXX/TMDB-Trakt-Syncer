@@ -28,12 +28,12 @@ def get_trakt_watchlist(encoded_username):
             movie = item.get('movie')
             tmdb_movie_id = movie.get('ids', {}).get('tmdb')
             trakt_movie_id = movie.get('ids', {}).get('trakt')
-            trakt_watchlist.append({'Title': movie.get('title'), 'Year': movie.get('year'), "TMDB_ID": tmdb_movie_id, 'TraktID': trakt_movie_id, 'Type': 'movie'})
+            trakt_watchlist.append({'Title': movie.get('title'), 'Year': movie.get('year'), "TMDB_ID": tmdb_movie_id, 'TraktID': trakt_movie_id, 'Date_Added': item.get('listed_at'), 'Type': 'movie'})
         elif item['type'] == 'show':
             show = item.get('show')
             tmdb_show_id = show.get('ids', {}).get('tmdb')
             trakt_show_id = show.get('ids', {}).get('trakt')
-            trakt_watchlist.append({'Title': show.get('title'), 'Year': show.get('year'), "TMDB_ID": tmdb_show_id, 'TraktID': trakt_show_id, 'Type': 'show'})
+            trakt_watchlist.append({'Title': show.get('title'), 'Year': show.get('year'), "TMDB_ID": tmdb_show_id, 'TraktID': trakt_show_id, 'Date_Added': item.get('listed_at'), 'Type': 'show'})
     
     return trakt_watchlist
 
@@ -50,11 +50,11 @@ def get_trakt_ratings(encoded_username):
         if item['type'] == 'movie':
             movie = item.get('movie')
             movie_id = movie.get('ids', {}).get('tmdb')
-            movie_ratings.append({'Title': movie.get('title'), 'Year': movie.get('year'), 'Rating': item.get('rating'), "TMDB_ID": movie_id, 'Type': 'movie'})
+            movie_ratings.append({'Title': movie.get('title'), 'Year': movie.get('year'), 'Rating': item.get('rating'), "TMDB_ID": movie_id, 'Date_Added': item.get('rated_at'), 'Type': 'movie'})
         elif item['type'] == 'show':
             show = item.get('show')
             show_id = show.get('ids', {}).get('tmdb')
-            show_ratings.append({'Title': show.get('title'), 'Year': show.get('year'), 'Rating': item.get('rating'), "TMDB_ID": show_id, 'Type': 'show'})
+            show_ratings.append({'Title': show.get('title'), 'Year': show.get('year'), 'Rating': item.get('rating'), "TMDB_ID": show_id, 'Date_Added': item.get('rated_at'), 'Type': 'show'})
         elif item['type'] == 'episode':
             show = item.get('show')
             show_title = show.get('title')

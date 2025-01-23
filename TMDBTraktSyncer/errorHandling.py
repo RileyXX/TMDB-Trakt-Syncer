@@ -69,7 +69,7 @@ def make_trakt_request(url, headers=None, params=None, payload=None, max_retries
                 retry_after = int(response.headers.get('Retry-After', retry_delay))
                 if response.status_code != 429:
                     remaining_time = total_wait_time - sum(retry_delay * (2 ** i) for i in range(retry_attempts))
-                    print(f"   - Server returned {response.status_code}. Retrying after {retry_after}s... "
+                    print(f" - Server returned {response.status_code}. Retrying after {retry_after}s... "
                           f"({retry_attempts}/{max_retries}) - Time remaining: {remaining_time}s")
                     EL.logger.warning(f"Server returned {response.status_code}. Retrying after {retry_after}s... "
                                       f"({retry_attempts}/{max_retries}) - Time remaining: {remaining_time}s")
@@ -81,7 +81,7 @@ def make_trakt_request(url, headers=None, params=None, payload=None, max_retries
                 # Handle non-retryable HTTP status codes
                 status_message = get_trakt_message(response.status_code)
                 error_message = f"Request failed with status code {response.status_code}: {status_message}"
-                print(f"   - {error_message}")
+                print(f" - {error_message}")
                 EL.logger.error(f"{error_message}. URL: {url}")
                 return response  # Exit with failure for non-retryable errors
 
@@ -89,7 +89,7 @@ def make_trakt_request(url, headers=None, params=None, payload=None, max_retries
         except (ConnectionError, Timeout, TooManyRedirects, SSLError, ProxyError) as network_error:
             retry_attempts += 1  # Increment retry counter
             remaining_time = total_wait_time - sum(retry_delay * (2 ** i) for i in range(retry_attempts))
-            print(f"   - Network error: {network_error}. Retrying ({retry_attempts}/{max_retries})... "
+            print(f" - Network error: {network_error}. Retrying ({retry_attempts}/{max_retries})... "
                   f"Time remaining: {remaining_time}s")
             EL.logger.warning(f"Network error: {network_error}. Retrying ({retry_attempts}/{max_retries})... "
                               f"Time remaining: {remaining_time}s")
@@ -100,13 +100,13 @@ def make_trakt_request(url, headers=None, params=None, payload=None, max_retries
         # Handle general request-related exceptions (non-retryable)
         except requests.exceptions.RequestException as req_err:
             error_message = f"Request failed with exception: {req_err}"
-            print(f"   - {error_message}")
+            print(f" - {error_message}")
             EL.logger.error(error_message, exc_info=True)
             return None  # Exit on non-retryable exceptions
 
     # If all retries are exhausted, log and return failure
     error_message = "Max retry attempts reached with Trakt API, request failed."
-    print(f"   - {error_message}")
+    print(f" - {error_message}")
     EL.logger.error(error_message)
     return None
 
@@ -179,7 +179,7 @@ def make_tmdb_request(url, headers=None, payload=None, max_retries=5):
                     f"Received no response (None). Retrying {retry_attempts}/{max_retries}. "
                     f"Time remaining: {time_remaining}s"
                 )
-                print(f"   - {error_message}")
+                print(f" - {error_message}")
                 EL.logger.error(error_message)
                 time.sleep(retry_delay)
                 retry_delay *= 2  # Exponential backoff
@@ -202,13 +202,13 @@ def make_tmdb_request(url, headers=None, payload=None, max_retries=5):
                         f"Request failed with status code {status_code}: {status_message}. "
                         f"Retrying {retry_attempts}/{max_retries}. Time remaining: {time_remaining}s"
                     )
-                    print(f"   - {error_message}")
+                    print(f" - {error_message}")
                     EL.logger.error(error_message)
             else:
                 # Non-retryable errors, exit loop and return None
                 status_message = get_tmdb_message(status_code)
                 error_message = f"Request failed with status code {status_code}: {status_message}"
-                print(f"   - {error_message}")
+                print(f" - {error_message}")
                 EL.logger.error(error_message)
                 return None
 
@@ -220,7 +220,7 @@ def make_tmdb_request(url, headers=None, payload=None, max_retries=5):
                 f"Network error: {network_error}. Retrying {retry_attempts}/{max_retries}. "
                 f"Time remaining: {time_remaining}s"
             )
-            print(f"   - {error_message}")
+            print(f" - {error_message}")
             EL.logger.error(error_message, exc_info=True)
             time.sleep(retry_delay)  # Wait before retrying
             retry_delay *= 2  # Exponential backoff for retries
@@ -228,13 +228,13 @@ def make_tmdb_request(url, headers=None, payload=None, max_retries=5):
         except RequestException as e:
             # Handle other non-network related exceptions (e.g., HTTP errors)
             error_message = f"Request failed with exception: {e}"
-            print(f"   - {error_message}")
+            print(f" - {error_message}")
             EL.logger.error(error_message, exc_info=True)
             return None
 
     # If max retries reached, log the error and return None
     error_message = "Max retry attempts reached with TMDB API, request failed."
-    print(f"   - {error_message}")
+    print(f" - {error_message}")
     EL.logger.error(error_message)
     return None
 
@@ -332,3 +332,25 @@ def filter_mismatched_items(trakt_list, tmdb_list):
     ]
 
     return filtered_trakt_list, filtered_tmdb_list
+    
+def sort_by_date_added(items, descending=False):
+    """
+    Sorts a list of items by the 'Date_Added' field.
+
+    Args:
+        items (list): A list of dictionaries or objects with a 'Date_Added' field.
+        descending (bool): Whether to sort in descending order. Defaults to False (ascending).
+
+    Returns:
+        list: A sorted list of items by the 'Date_Added' field.
+    """
+    def parse_date(item):
+        date_str = item.get('Date_Added')  # Safely get the Date_Added field
+        if date_str:
+            try:
+                return datetime.strptime(date_str, "%Y-%m-%dT%H:%M:%S.%fZ")
+            except ValueError:
+                pass  # Invalid date format
+        return datetime.min  # Use the earliest date as a fallback
+
+    return sorted(items, key=parse_date, reverse=descending)
