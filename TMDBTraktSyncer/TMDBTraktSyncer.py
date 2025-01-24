@@ -97,6 +97,13 @@ def main():
             tmdb_watchlist_to_set = [item for item in trakt_watchlist if item['TMDB_ID'] not in [tmdb_item['TMDB_ID'] for tmdb_item in tmdb_watchlist]]
             trakt_watchlist_to_set = [item for item in tmdb_watchlist if item['TMDB_ID'] not in [trakt_item['TMDB_ID'] for trakt_item in trakt_watchlist]]
             
+            # Filter out items already set: Filters items from the target_list that are not already present in the source_list based on key
+            tmdb_ratings_to_set = EH.filter_items(tmdb_ratings, trakt_ratings, key="TMDB_ID")
+            trakt_ratings_to_set = EH.filter_items(trakt_ratings, tmdb_ratings, key="TMDB_ID")
+
+            tmdb_watchlist_to_set = EH.filter_items(tmdb_watchlist, trakt_watchlist, key="TMDB_ID")
+            trakt_watchlist_to_set = EH.filter_items(trakt_watchlist, tmdb_watchlist, key="TMDB_ID")
+            
             # If remove_watched_from_watchlists_value is true
             if remove_watched_from_watchlists_value:        
                 # Get the IDs from watched_content
