@@ -333,6 +333,21 @@ def filter_mismatched_items(trakt_list, tmdb_list):
 
     return filtered_trakt_list, filtered_tmdb_list
     
+def filter_items(source_list, target_list, key="TMDB_ID"):
+    """
+    Filters items from the target_list that are not already present in the source_list based on a key.
+
+    Args:
+        source_list (list): The list whose elements are used to filter the target_list.
+        target_list (list): The list to be filtered.
+        key (str): The key to identify unique elements. Defaults to "TMDB_ID".
+
+    Returns:
+        list: A filtered list containing items from the target_list that are not in the source_list.
+    """
+    source_set = {item[key] for item in source_list}
+    return [item for item in target_list if item[key] not in source_set]
+    
 def sort_by_date_added(items, descending=False):
     """
     Sorts a list of items by the 'Date_Added' field.
