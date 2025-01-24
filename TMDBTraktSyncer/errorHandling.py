@@ -297,7 +297,7 @@ def get_tmdb_message(status_code):
 
     # Default to 'Unknown error' if status code is not found in the dictionary
     return error_messages.get(status_code, "Unknown error")
-    
+'''    
 # Function to filter out items that share the same Title, Year, and Type
 # AND have non-matching TMDB_ID values
 def filter_mismatched_items(trakt_list, tmdb_list):
@@ -332,7 +332,7 @@ def filter_mismatched_items(trakt_list, tmdb_list):
     ]
 
     return filtered_trakt_list, filtered_tmdb_list
-    
+'''   
 def filter_items(source_list, target_list, key="TMDB_ID"):
     """
     Filters items from the target_list that are not already present in the source_list based on a key.
