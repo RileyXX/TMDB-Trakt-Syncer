@@ -2,7 +2,7 @@ import os
 import json
 import sys
 import datetime
-from datetime import timedelta
+from datetime import timedelta, timezone
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from TMDBTraktSyncer import authTrakt
@@ -23,7 +23,7 @@ def prompt_get_credentials():
         "trakt_access_token": "empty",
         "trakt_refresh_token": "empty",
         "tmdb_access_token": "empty",
-        "last_trakt_token_refresh": "empty"
+        "trakt_token_expires": "empty"
     }
 
     # Check if the file exists and is not empty
@@ -49,7 +49,7 @@ def prompt_get_credentials():
 
     # Prompt the user only for missing or empty values (except for tokens that can be refreshed)
     for key, value in values.items():
-        if value == "empty" and key not in ["trakt_access_token", "trakt_refresh_token", "last_trakt_token_refresh"]:
+        if value == "empty" and key not in ["trakt_access_token", "trakt_refresh_token", "trakt_token_expires"]:
             if key == "trakt_client_id":
                 print("\n")
                 print("***** TRAKT API SETUP *****")
@@ -81,32 +81,31 @@ def prompt_get_credentials():
         json.dump(values, f, indent=4, separators=(', ', ': '))
 
     # Check if it's time to refresh the Trakt tokens (7 days interval)
-    last_trakt_token_refresh = values.get("last_trakt_token_refresh", "empty")
     should_refresh = True
-    if last_trakt_token_refresh != "empty":
+    trakt_token_expires = values.get("trakt_token_expires", "empty")
+    
+    if trakt_token_expires != "empty":
         try:
-            last_trakt_token_refresh_time = datetime.datetime.fromisoformat(last_trakt_token_refresh)
-            if datetime.datetime.now() - last_trakt_token_refresh_time < timedelta(days=7):
+            expiration_time = datetime.datetime.fromisoformat(trakt_token_expires).replace(tzinfo=timezone.utc)
+            if datetime.datetime.now(timezone.utc).replace(tzinfo=timezone.utc) < expiration_time:
                 should_refresh = False
         except ValueError:
-            pass
-
-    # Refresh tokens if necessary
+            pass  # Invalid date format, force refresh
+    
     if should_refresh:
-        trakt_access_token = values.get("trakt_refresh_token", "empty")
         client_id = values["trakt_client_id"]
         client_secret = values["trakt_client_secret"]
-        
-        if trakt_access_token != "empty":
-            trakt_access_token, trakt_refresh_token = authTrakt.authenticate(client_id, client_secret, trakt_access_token)
+        refresh_token = values.get("trakt_refresh_token", "empty")
+
+        if refresh_token != "empty":
+            access_token, refresh_token, expiration_time = authTrakt.authenticate(client_id, client_secret, refresh_token)
         else:
-            trakt_access_token, trakt_refresh_token = authTrakt.authenticate(client_id, client_secret)
-
-        # Update the values and last refresh timestamp
-        values["trakt_access_token"] = trakt_access_token
-        values["trakt_refresh_token"] = trakt_refresh_token
-        values["last_trakt_token_refresh"] = datetime.datetime.now().isoformat()
-
+            access_token, refresh_token, expiration_time = authTrakt.authenticate(client_id, client_secret)
+        
+        values["trakt_access_token"] = access_token
+        values["trakt_refresh_token"] = refresh_token
+        values["trakt_token_expires"] = expiration_time
+        
         with open(file_path, 'w', encoding='utf-8') as f:
             json.dump(values, f, indent=4, separators=(', ', ': '))
 
