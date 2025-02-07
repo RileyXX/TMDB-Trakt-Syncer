@@ -22,8 +22,7 @@ def report_error(error_message):
     print(f"Submit the error here: {github_issue_url}")
     print("-" * 50)
 
-def make_trakt_request(url, headers=None, params=None, payload=None, max_retries=10):
-
+def make_trakt_request(url, headers=None, params=None, payload=None, max_retries=5):
     # Set default headers if none are provided
     if headers is None:
         # Get credentials
@@ -39,7 +38,7 @@ def make_trakt_request(url, headers=None, params=None, payload=None, max_retries
     retry_delay = 1  # Initial delay between retries (in seconds)
     retry_attempts = 0  # Count of retry attempts made
     connection_timeout = 20  # Timeout for requests (in seconds)
-    total_wait_time = sum(retry_delay * (2 ** i) for i in range(max_retries))  # Total possible wait time
+    total_wait_time = sum(1 * (2 ** i) for i in range(max_retries))  # Total possible wait time
 
     # Retry loop to handle network errors or server overload scenarios
     while retry_attempts < max_retries:
@@ -67,8 +66,9 @@ def make_trakt_request(url, headers=None, params=None, payload=None, max_retries
 
                 # Respect the 'Retry-After' header if provided, otherwise use default delay
                 retry_after = int(response.headers.get('Retry-After', retry_delay))
-                if response.status_code != 429:
-                    remaining_time = total_wait_time - sum(retry_delay * (2 ** i) for i in range(retry_attempts))
+                # Skip logging rate limit errors
+                if status_code != 429:
+                    remaining_time = sum(1 * (2 ** i) for i in range(retry_attempts, max_retries))
                     print(f" - Server returned {response.status_code}. Retrying after {retry_after}s... "
                           f"({retry_attempts}/{max_retries}) - Time remaining: {remaining_time}s")
                     EL.logger.warning(f"Server returned {response.status_code}. Retrying after {retry_after}s... "
@@ -88,7 +88,7 @@ def make_trakt_request(url, headers=None, params=None, payload=None, max_retries
         # Handle Network errors (connection issues, timeouts, SSL, etc.)
         except (ConnectionError, Timeout, TooManyRedirects, SSLError, ProxyError) as network_error:
             retry_attempts += 1  # Increment retry counter
-            remaining_time = total_wait_time - sum(retry_delay * (2 ** i) for i in range(retry_attempts))
+            remaining_time = sum(1 * (2 ** i) for i in range(retry_attempts, max_retries))
             print(f" - Network error: {network_error}. Retrying ({retry_attempts}/{max_retries})... "
                   f"Time remaining: {remaining_time}s")
             EL.logger.warning(f"Network error: {network_error}. Retrying ({retry_attempts}/{max_retries})... "
@@ -174,7 +174,7 @@ def make_tmdb_request(url, headers=None, payload=None, max_retries=5):
             if response is None:
                 # If the response is None, treat it as retryable
                 retry_attempts += 1
-                time_remaining = sum(retry_delay * (2 ** i) for i in range(max_retries - retry_attempts))
+                time_remaining = sum(1 * (2 ** i) for i in range(max_retries - retry_attempts))
                 error_message = (
                     f"Received no response (None). Retrying {retry_attempts}/{max_retries}. "
                     f"Time remaining: {time_remaining}s"
@@ -192,7 +192,7 @@ def make_tmdb_request(url, headers=None, payload=None, max_retries=5):
             elif status_code in [504, 429, 502, 503]:
                 # Retryable errors, such as rate limiting or server issues
                 retry_attempts += 1
-                time_remaining = sum(retry_delay * (2 ** i) for i in range(max_retries - retry_attempts))
+                time_remaining = sum(1 * (2 ** i) for i in range(max_retries - retry_attempts))
                 time.sleep(retry_delay)
                 retry_delay *= 2  # Exponential backoff
                 # Skip logging rate limit errors
@@ -215,7 +215,7 @@ def make_tmdb_request(url, headers=None, payload=None, max_retries=5):
         except (ConnectionError, Timeout, TooManyRedirects, SSLError, ProxyError) as network_error:
             # Handle network errors or timeouts that are retryable
             retry_attempts += 1
-            time_remaining = sum(retry_delay * (2 ** i) for i in range(max_retries - retry_attempts))
+            time_remaining = sum(1 * (2 ** i) for i in range(max_retries - retry_attempts))
             error_message = (
                 f"Network error: {network_error}. Retrying {retry_attempts}/{max_retries}. "
                 f"Time remaining: {time_remaining}s"
