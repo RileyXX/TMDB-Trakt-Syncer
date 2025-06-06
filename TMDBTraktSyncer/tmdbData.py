@@ -66,7 +66,7 @@ def get_tmdb_ratings(account_id):
         results, total_pages, _ = fetch_data(url)
         
         for movie in results:
-            movie_ratings.append({'Title': movie['title'], 'Year': movie['release_date'][:4], 'Rating': movie['rating'], 'TMDB_ID': movie['id'], 'Type': 'movie'})
+            movie_ratings.append({'Title': movie['title'], 'Year': movie.get('release_date')[:4] if movie.get('release_date') else None, 'Rating': movie['rating'], 'TMDB_ID': movie['id'], 'Type': 'movie'})
         
         page += 1
 
@@ -80,7 +80,7 @@ def get_tmdb_ratings(account_id):
         results, total_pages, _ = fetch_data(url)
         
         for show in results:
-            show_ratings.append({'Title': show['name'], 'Year': show['first_air_date'][:4], 'Rating': show['rating'], 'TMDB_ID': show['id'], 'Type': 'show'})
+            show_ratings.append({'Title': show['name'], 'Year': show.get('first_air_date')[:4] if show.get('first_air_date') else None, 'Rating': show['rating'], 'TMDB_ID': show['id'], 'Type': 'show'})
         
         page += 1
 
@@ -101,7 +101,7 @@ def get_tmdb_ratings(account_id):
             episode_title = f"{show_name}: {episode.get('name', 'Episode Name Not Found')}"
             episode_ratings.append({
                 'Title': episode_title,
-                'Year': episode.get('air_date', '')[:4],
+                'Year': episode.get('air_date', '')[:4] if episode.get('air_date') else None,
                 'Rating': episode.get('rating'),
                 'TMDB_ID': episode.get('id'),
                 'Season': episode.get('season_number'),

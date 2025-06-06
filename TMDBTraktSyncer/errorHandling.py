@@ -55,35 +55,44 @@ def make_trakt_request(url, headers=None, params=None, payload=None, max_retries
             else:
                 # POST request with JSON payload
                 response = requests.post(url, headers=headers, json=payload, timeout=connection_timeout)
-
-            # If request is successful, return the response
-            if response.status_code in [200, 201, 204]:
-                return response
             
-            # Handle retryable server errors and rate limit exceeded
-            elif response.status_code in [429, 500, 502, 503, 504, 520, 521, 522]:
-                retry_attempts += 1  # Increment retry counter
+            if response is not None:
+                # If request is successful, return the response
+                if response.status_code in [200, 201, 204]:
+                    return response
+                
+                # Handle retryable server errors and rate limit exceeded
+                elif response.status_code in [429, 500, 502, 503, 504, 520, 521, 522]:
+                    retry_attempts += 1  # Increment retry counter
 
-                # Respect the 'Retry-After' header if provided, otherwise use default delay
-                retry_after = int(response.headers.get('Retry-After', retry_delay))
-                # Skip logging rate limit errors
-                if status_code != 429:
-                    remaining_time = sum(1 * (2 ** i) for i in range(retry_attempts, max_retries))
-                    print(f" - Server returned {response.status_code}. Retrying after {retry_after}s... "
-                          f"({retry_attempts}/{max_retries}) - Time remaining: {remaining_time}s")
-                    EL.logger.warning(f"Server returned {response.status_code}. Retrying after {retry_after}s... "
-                                      f"({retry_attempts}/{max_retries}) - Time remaining: {remaining_time}s")
+                    # Respect the 'Retry-After' header if provided, otherwise use default delay
+                    retry_after = int(response.headers.get('Retry-After', retry_delay))
+                    # Skip logging rate limit errors
+                    if status_code != 429:
+                        remaining_time = sum(1 * (2 ** i) for i in range(retry_attempts, max_retries))
+                        print(f" - Server returned {response.status_code}. Retrying after {retry_after}s... "
+                              f"({retry_attempts}/{max_retries}) - Time remaining: {remaining_time}s")
+                        EL.logger.warning(f"Server returned {response.status_code}. Retrying after {retry_after}s... "
+                                          f"({retry_attempts}/{max_retries}) - Time remaining: {remaining_time}s")
 
-                time.sleep(retry_after)  # Wait before retrying
-                retry_delay *= 2  # Apply exponential backoff for retries
-            
+                    time.sleep(retry_after)  # Wait before retrying
+                    retry_delay *= 2  # Apply exponential backoff for retries
+                
+                else:
+                    # Handle non-retryable HTTP status codes
+                    status_message = get_trakt_message(response.status_code)
+                    error_message = f"Request failed with status code {response.status_code}: {status_message}"
+                    print(f" - {error_message}")
+                    EL.logger.error(f"{error_message}. URL: {url}")
+                    return response  # Exit with failure for non-retryable errors
+                    
             else:
-                # Handle non-retryable HTTP status codes
-                status_message = get_trakt_message(response.status_code)
-                error_message = f"Request failed with status code {response.status_code}: {status_message}"
-                print(f" - {error_message}")
-                EL.logger.error(f"{error_message}. URL: {url}")
-                return response  # Exit with failure for non-retryable errors
+                # Failsafe in case response is still None for any unexpected reason
+                retry_attempts += 1
+                print(f" - No response received. Retrying... ({retry_attempts}/{max_retries})")
+                EL.logger.warning(f"No response received. Retrying... ({retry_attempts}/{max_retries})")
+                time.sleep(retry_delay)
+                retry_delay *= 2
 
         # Handle Network errors (connection issues, timeouts, SSL, etc.)
         except (ConnectionError, Timeout, TooManyRedirects, SSLError, ProxyError) as network_error:
