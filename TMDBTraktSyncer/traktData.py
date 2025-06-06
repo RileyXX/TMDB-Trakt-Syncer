@@ -1,5 +1,4 @@
 import json
-import requests
 import urllib.parse
 import datetime
 import sys

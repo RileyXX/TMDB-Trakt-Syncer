@@ -1,7 +1,5 @@
 import os
 import json
-import requests
-import time
 import sys
 import argparse
 from pathlib import Path

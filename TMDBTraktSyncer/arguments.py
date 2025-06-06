@@ -3,7 +3,6 @@ import sys
 import shutil
 import subprocess
 import os
-import platform
 import stat
 
 def try_remove(file_path, retries=3, delay=1):
