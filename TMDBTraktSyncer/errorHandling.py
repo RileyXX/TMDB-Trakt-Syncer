@@ -68,7 +68,7 @@ def make_trakt_request(url, headers=None, params=None, payload=None, max_retries
                     # Respect the 'Retry-After' header if provided, otherwise use default delay
                     retry_after = int(response.headers.get('Retry-After', retry_delay))
                     # Skip logging rate limit errors
-                    if status_code != 429:
+                    if response.status_code != 429:
                         remaining_time = sum(1 * (2 ** i) for i in range(retry_attempts, max_retries))
                         print(f" - Server returned {response.status_code}. Retrying after {retry_after}s... "
                               f"({retry_attempts}/{max_retries}) - Time remaining: {remaining_time}s")
